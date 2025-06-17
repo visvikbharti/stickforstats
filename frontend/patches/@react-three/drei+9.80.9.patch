@@ -1,0 +1,16 @@
+diff --git a/node_modules/@react-three/drei/core/Text.js b/node_modules/@react-three/drei/core/Text.js
+index 1234567..7654321 100644
+--- a/node_modules/@react-three/drei/core/Text.js
++++ b/node_modules/@react-three/drei/core/Text.js
+@@ -9,6 +9,13 @@ import { suspend } from 'suspend-react';
+ 
+ import * as THREE from 'three';
+ 
++// Patch THREE for compatibility
++if (!THREE.BatchedMesh) {
++  THREE.BatchedMesh = class BatchedMesh {
++    constructor() { this.isBatchedMesh = true; }
++  };
++}
++
+ // Rest of the file

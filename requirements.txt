@@ -1,0 +1,91 @@
+# Core Django dependencies
+Django>=4.2.0,<4.3.0
+django-environ>=0.10.0
+django-allauth>=0.54.0
+django-rest-framework>=0.1.0
+djangorestframework>=3.14.0
+django-cors-headers>=4.0.0
+django-filter>=23.1
+django-storages>=1.13.2
+django-crispy-forms>=2.0
+crispy-bootstrap5>=0.7
+drf-spectacular>=0.26.2
+
+# Asynchronous processing
+celery>=5.2.7
+django-celery-results>=2.5.0
+django-celery-beat>=2.5.0
+redis>=4.5.5
+channels>=4.0.0
+channels-redis>=4.1.0
+
+# Database
+psycopg2-binary>=2.9.6
+pgvector>=0.2.0
+# django-pgvector>=0.1.6 # Commented out as package may not be available
+
+# Statistical computation
+numpy>=1.24.3
+pandas>=2.0.1
+scipy>=1.10.1
+statsmodels>=0.14.0
+scikit-learn>=1.2.2
+patsy>=0.5.3
+pingouin>=0.5.3
+matplotlib>=3.7.1
+seaborn>=0.12.2
+plotly>=5.14.1
+
+# Bayesian analysis
+# Optional: Bayesian analysis (can be installed separately if needed)
+# pymc3>=3.11.5
+arviz>=0.15.1
+
+# Time series analysis (can be installed separately if needed)
+# prophet>=1.1.4
+
+# Data validation and processing
+pydantic>=2.0.0
+openpyxl>=3.1.2
+xlrd>=2.0.1
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# RAG system and LLM integration
+langchain>=0.0.200
+langchain-openai>=0.0.1
+faiss-cpu>=1.7.4
+sentence-transformers>=2.2.2
+tiktoken>=0.4.0
+
+# Authentication and security
+djangorestframework-simplejwt>=5.2.2
+django-two-factor-auth>=1.15.2
+
+# File handling and media
+Pillow>=9.5.0
+whitenoise>=6.4.0
+django-cleanup>=7.0.0
+
+# Testing and development
+pytest>=7.3.1
+pytest-django>=4.5.2
+pytest-cov>=4.1.0
+factory-boy>=3.2.1
+coverage>=7.2.5
+black>=23.3.0
+isort>=5.12.0
+flake8>=6.0.0
+mypy>=1.3.0
+django-debug-toolbar>=4.1.0
+
+# Visualization tools
+kaleido>=0.2.1  # For static image export with Plotly
+reportlab>=4.0.0
+pypdf2>=3.0.1
+
+# Production
+gunicorn>=20.1.0
+uvicorn>=0.22.0
+supervisor>=4.2.5
+whitenoise>=6.4.0dj-database-url==2.1.0

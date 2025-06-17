@@ -1,0 +1,19 @@
+diff --git a/node_modules/@react-three/fiber/dist/react-three-fiber.esm.js b/node_modules/@react-three/fiber/dist/react-three-fiber.esm.js
+index 1234567..7654321 100644
+--- a/node_modules/@react-three/fiber/dist/react-three-fiber.esm.js
++++ b/node_modules/@react-three/fiber/dist/react-three-fiber.esm.js
+@@ -12,7 +12,13 @@ import { unstable_useDeferredValue } from 'react';
+ import { suspend, preload } from 'suspend-react';
+ 
+ // Add Three.js objects to the catalog
+-React.useMemo(() => extend(THREE), []);
++React.useMemo(() => {
++  // Filter out BatchedMesh to avoid errors if it doesn't exist in this version of Three.js
++  const safeThree = { ...THREE };
++  if (!safeThree.BatchedMesh) {
++    safeThree.BatchedMesh = class BatchedMesh { constructor() { this.isBatchedMesh = true; } };
++  }
++  extend(safeThree);
++}, []);
+ 
+ // Rest of the file follows...

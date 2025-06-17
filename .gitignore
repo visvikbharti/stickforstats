@@ -1,0 +1,111 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+.venv
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Frontend
+node_modules/
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Deployment
+*.pem
+*.key
+
+# Large files
+*.sqlite3
+*.db
+*.zip
+*.tar.gz
+*.rar
+
+# Cache
+.cache/
+frontend/.cache/
+*.cache
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# pytest
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Environments
+.env.*
+!.env.example
+!frontend/.env.production
+
+# Claude
+**/.claude/settings.local.json
+
+# Data files (if any)
+data/
+*.csv
+*.xlsx
+*.h5
+*.pkl
+*.pickle
+
+# Model files
+*.pth
+*.h5
+*.model
+*.weights
+
+# Logs
+logs/
+*.log

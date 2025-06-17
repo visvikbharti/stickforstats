@@ -1,0 +1,64 @@
+name: Performance Testing
+
+on:
+  # Run on push to main
+  push:
+    branches: [main]
+  
+  # Run on PRs to main
+  pull_request:
+    branches: [main]
+    
+  # Allow manual triggering
+  workflow_dispatch:
+  
+  # Run weekly on Monday at 3am
+  schedule:
+    - cron: '0 3 * * 1'
+
+jobs:
+  performance-testing:
+    name: Run Performance Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Start development server
+        run: npm run start & sleep 10
+        
+      - name: Run performance tests
+        run: npm run test:performance:ci
+        
+      - name: Archive performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: performance-results/
+          retention-days: 90
+          
+      - name: Check performance thresholds
+        run: |
+          # Extract overall score from report
+          SCORE=$(cat performance-results/performance-report.json | jq '.overallScore')
+          
+          # Check if score is below threshold
+          if [ "$SCORE" -lt 70 ]; then
+            echo "Performance score ($SCORE) is below threshold (70)!"
+            exit 1
+          else
+            echo "Performance score ($SCORE) is above threshold (70)."
+          fi

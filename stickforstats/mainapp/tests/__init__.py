@@ -1,0 +1,1 @@
+# Initialize mainapp tests module

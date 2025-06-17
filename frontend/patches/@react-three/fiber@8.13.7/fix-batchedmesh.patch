@@ -1,0 +1,12 @@
+diff --git a/dist/react-three-fiber.esm.js b/dist/react-three-fiber.esm.js
+index 12345678..87654321 100644
+--- a/dist/react-three-fiber.esm.js
++++ b/dist/react-three-fiber.esm.js
+@@ -1,7 +1,7 @@
+ import * as React from 'react';
+ import * as THREE from 'three';
+ 
+-React.useMemo(() => extend(THREE), []);
++React.useMemo(() => extend({ ...THREE, BatchedMesh: undefined }), []);
+ 
+ // Fix for BatchedMesh not available in Three.js version

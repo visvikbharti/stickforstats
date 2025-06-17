@@ -1,0 +1,53 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { initPerformanceMonitoring } from './utils/performanceMonitoring';
+import PerformanceMonitorToggle from './components/performance/PerformanceMonitorToggle';
+
+// Initialize performance monitoring system
+initPerformanceMonitoring({
+  logToConsole: process.env.NODE_ENV === 'development',
+  sendToAnalytics: process.env.NODE_ENV === 'production',
+  samplingRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0, // 10% of production users, all dev users
+});
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+    {process.env.NODE_ENV === 'development' && <PerformanceMonitorToggle />}
+  </React.StrictMode>
+);
+
+// Register the service worker for offline capabilities and caching
+serviceWorkerRegistration.register({
+  onSuccess: (registration) => {
+    console.log('Service worker registration successful with scope:', registration.scope);
+  },
+  onUpdate: (registration) => {
+    console.log('New app version available. Please refresh the page to update.');
+    // You could show a notification to the user here
+  }
+});
+
+// Send web vitals metrics to our performance monitoring system
+reportWebVitals(metric => {
+  // Log to console in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log(metric);
+  }
+  
+  // Track via our performance monitoring in both environments
+  // (the monitoring system will handle whether to actually send data or not)
+  if (window.gtag) {
+    window.gtag('event', 'web_vitals', {
+      event_category: 'Web Vitals',
+      event_label: metric.name,
+      value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+      non_interaction: true,
+    });
+  }
+});
