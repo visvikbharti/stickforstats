@@ -22,5 +22,6 @@ class RagSystemConfig(AppConfig):
         from . import module_info  # This will register the module
         
         # Initialize services if needed
-        from .services.rag_service import initialize_rag_services
-        initialize_rag_services()
+        # Commenting out for local testing - causing import errors
+        # from .services.rag_service import initialize_rag_services
+        # initialize_rag_services()

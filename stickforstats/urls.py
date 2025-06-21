@@ -1,4 +1,4 @@
-from stickforstats.health.views import health_check
+# from stickforstats.health.views import health_check  # Commented out - module not found
 """
 Main URL configuration for the StickForStats Django project.
 """
@@ -14,7 +14,8 @@ def index(request):
     return HttpResponse("<h1>StickForStats Migration Project</h1><p>The server is running.</p>")
 
 urlpatterns = [
-    path("health/", health_check, name="health_check"),    path('admin/', admin.site.urls),
+    # path("health/", health_check, name="health_check"),  # Commented out - health_check not defined
+    path('admin/', admin.site.urls),
     path('', index, name='index'),
 
     # Core API

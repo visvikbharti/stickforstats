@@ -63,19 +63,19 @@ INSTALLED_APPS = [
     'stickforstats.sqc_analysis.apps.SQCAnalysisConfig',
     'stickforstats.doe_analysis.apps.DOEAnalysisConfig',
     'stickforstats.pca_analysis.apps.PCAAnalysisConfig',
-    'stickforstats.gpu_statistical_engine.apps.GpuStatisticalEngineConfig',
+    # 'stickforstats.gpu_statistical_engine.apps.GpuStatisticalEngineConfig',  # Commented out - module not found
     
-    # Enterprise modules
-    'stickforstats.marketplace.apps.MarketplaceConfig',
-    'stickforstats.collaboration.apps.CollaborationConfig',
+    # Enterprise modules - Commented out for local testing
+    # 'stickforstats.marketplace.apps.MarketplaceConfig',
+    # 'stickforstats.collaboration.apps.CollaborationConfig',
     # 'stickforstats.machine_learning.apps.MachineLearningConfig',  # Temporarily disabled
-    'stickforstats.advanced_statistics.apps.AdvancedStatisticsConfig',
+    # 'stickforstats.advanced_statistics.apps.AdvancedStatisticsConfig',
     # 'stickforstats.automated_reporting.apps.AutomatedReportingConfig',  # Temporarily disabled
-    'stickforstats.enterprise_security.apps.EnterpriseSecurityConfig',
+    # 'stickforstats.enterprise_security.apps.EnterpriseSecurityConfig',
     # 'stickforstats.data_visualization.apps.DataVisualizationConfig',  # Temporarily disabled
     
     # Workflow automation
-    'stickforstats.workflow_automation.apps.WorkflowAutomationConfig',  # Re-enabled after fixing model conflict
+    # 'stickforstats.workflow_automation.apps.WorkflowAutomationConfig',  # Re-enabled after fixing model conflict
 ]
 
 MIDDLEWARE = [
