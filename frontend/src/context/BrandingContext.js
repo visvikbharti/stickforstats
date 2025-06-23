@@ -39,4 +39,5 @@ export const BrandingProvider = ({ children }) => {
   );
 };
 
+export { BrandingContext };
 export default BrandingContext;

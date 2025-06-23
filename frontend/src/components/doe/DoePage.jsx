@@ -21,8 +21,8 @@ import DesignBuilder from './DesignBuilder';
 import ResponsiveDoePage from './utils/ResponsiveDoePage';
 import { useIsMobile } from './utils/ResponsiveUtils';
 
-import { fetchCurrentUser } from '../../services/authService';
-import { fetchEducationalContent } from '../../services/contentService';
+import authService from '../../services/authService';
+import contentService from '../../services/contentService';
 
 /**
  * DoePage - Main component for the Design of Experiments module
@@ -44,8 +44,8 @@ function DoePage() {
     async function loadData() {
       try {
         setLoading(true);
-        const userData = await fetchCurrentUser();
-        const educationalContent = await fetchEducationalContent('doe');
+        const userData = await authService.getCurrentUser();
+        const educationalContent = await contentService.getContent('doe');
         
         setUser(userData);
         setContent(educationalContent);

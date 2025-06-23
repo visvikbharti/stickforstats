@@ -2,16 +2,20 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DoePage from '../DoePage';
-import { fetchCurrentUser } from '../../../services/authService';
-import { fetchEducationalContent } from '../../../services/contentService';
+import authService from '../../../services/authService';
+import contentService from '../../../services/contentService';
 
 // Mock the services
 jest.mock('../../../services/authService', () => ({
-  fetchCurrentUser: jest.fn(),
+  default: {
+    getCurrentUser: jest.fn(),
+  }
 }));
 
 jest.mock('../../../services/contentService', () => ({
-  fetchEducationalContent: jest.fn(),
+  default: {
+    getContent: jest.fn(),
+  }
 }));
 
 // Mock the child components

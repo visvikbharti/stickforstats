@@ -35,7 +35,7 @@ import {
   Refresh as RefreshIcon,
   Delete as DeleteIcon
 } from '@mui/icons-material';
-import { BrandingContext } from '../../context/BrandingContext';
+import BrandingContext from '../../context/BrandingContext';
 
 const BrandingManager = () => {
   const { branding, updateBranding } = useContext(BrandingContext);
