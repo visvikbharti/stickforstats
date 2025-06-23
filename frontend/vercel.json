@@ -1,0 +1,45 @@
+{
+  "version": 2,
+  "name": "stickforstats",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://your-backend-api.com/api/$1",
+      "headers": {
+        "x-forwarded-host": "$host"
+      }
+    },
+    {
+      "src": "/ws/(.*)",
+      "dest": "wss://your-backend-api.com/ws/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "REACT_APP_API_URL": "/api",
+    "REACT_APP_WEBSOCKET_URL": "/ws",
+    "REACT_APP_API_BASE_URL": "/api",
+    "REACT_APP_WS_URL": "/ws"
+  },
+  "build": {
+    "env": {
+      "CI": "false",
+      "GENERATE_SOURCEMAP": "false"
+    }
+  }
+}
