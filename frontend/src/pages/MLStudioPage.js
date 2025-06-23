@@ -32,11 +32,11 @@ import {
   Psychology as PsychologyIcon,
   Upload as UploadIcon,
   Engineering as EngineeringIcon,
-  ModelTraining as ModelTrainingIcon,
+  Psychology as ModelTrainingIcon,
   Assessment as AssessmentIcon,
   Speed as SpeedIcon,
   DataUsage as DataUsageIcon,
-  TuneIcon,
+  Tune as TuneIcon,
   SaveAlt as SaveAltIcon
 } from '@mui/icons-material';
 

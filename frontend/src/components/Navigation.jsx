@@ -53,7 +53,7 @@ import InsightsIcon from '@mui/icons-material/Insights';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import SecurityIcon from '@mui/icons-material/Security';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
+import ModelTrainingIcon from '@mui/icons-material/Psychology';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import GroupWorkIcon from '@mui/icons-material/GroupWork';
 import PeopleIcon from '@mui/icons-material/People';
