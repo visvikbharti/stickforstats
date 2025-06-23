@@ -15,7 +15,7 @@ import {
   MenuBook as DocsIcon,
   Support as SupportIcon,
   Feedback as FeedbackIcon,
-  KeyboardShortcut as KeyboardIcon,
+  Keyboard as KeyboardIcon,
   VideoLibrary as VideoIcon,
 } from '@mui/icons-material';
 import { useTour } from './TourProvider';
