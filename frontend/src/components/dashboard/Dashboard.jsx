@@ -38,7 +38,7 @@ import {
   Close as CloseIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 
 // Import RAG system components
