@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import darkTheme from './darkTheme';
 
 // Color palette
 const colors = {
@@ -323,6 +324,14 @@ const theme = createTheme({
     },
   },
 });
+
+// Function to get theme based on mode
+export const getTheme = (mode = 'light') => {
+  if (mode === 'dark') {
+    return darkTheme;
+  }
+  return theme;
+};
 
 // Export default theme and additional themes
 export default theme;
