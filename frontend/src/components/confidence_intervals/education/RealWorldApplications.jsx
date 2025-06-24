@@ -51,7 +51,41 @@ const RealWorldApplications = () => {
     const fetchCaseStudies = async () => {
       try {
         const response = await axios.get('/api/v1/confidence-intervals/case-studies/');
-        setCaseStudies(response.data);
+        // Ensure response.data is an array
+        if (Array.isArray(response.data)) {
+          setCaseStudies(response.data);
+        } else if (response.data && Array.isArray(response.data.results)) {
+          // Handle paginated response
+          setCaseStudies(response.data.results);
+        } else if (response.data && Array.isArray(response.data.data)) {
+          // Handle wrapped data response
+          setCaseStudies(response.data.data);
+        } else {
+          console.warn('Unexpected response format from case studies API:', response.data);
+          // Set demo data as fallback
+          setCaseStudies([
+            {
+              id: 'demo1',
+              title: 'Clinical Trial for New Diabetes Treatment',
+              field: 'Medical Research',
+              context: 'A randomized controlled trial with 500 participants comparing a new diabetes medication to standard treatment.',
+              key_finding: 'The new treatment reduced HbA1c levels by 1.2% compared to 0.8% for standard treatment.',
+              interval_description: 'Difference: 0.4% (95% CI: 0.2% to 0.6%)',
+              impact: 'The new treatment was approved based on the clinically significant improvement and narrow confidence interval.',
+              source_url: '#'
+            },
+            {
+              id: 'demo2',
+              title: 'Online Learning Platform Effectiveness',
+              field: 'Education',
+              context: 'A study of 1,200 students comparing traditional classroom learning to an online platform for mathematics.',
+              key_finding: 'Students using the online platform scored an average of 6 points higher on standardized tests.',
+              interval_description: 'Mean difference: 6 points (95% CI: 2.5 to 9.5 points)',
+              impact: 'Schools implemented a hybrid approach, using the online platform as a supplement to traditional teaching.',
+              source_url: '#'
+            }
+          ]);
+        }
       } catch (error) {
         console.error('Error fetching case studies:', error);
         // Even if there's an error, still set some demo data
@@ -565,7 +599,7 @@ const RealWorldApplications = () => {
                   </Typography>
                   
                   <Grid container spacing={3}>
-                    {caseStudies.map((study) => (
+                    {Array.isArray(caseStudies) && caseStudies.map((study) => (
                       <Grid item xs={12} md={6} key={study.id}>
                         <Card variant="outlined">
                           <CardHeader
@@ -596,7 +630,7 @@ const RealWorldApplications = () => {
                     ))}
                   </Grid>
                   
-                  {caseStudies.length === 0 && (
+                  {(!Array.isArray(caseStudies) || caseStudies.length === 0) && (
                     <Alert severity="info">
                       No case studies available at this time. Please check back later.
                     </Alert>

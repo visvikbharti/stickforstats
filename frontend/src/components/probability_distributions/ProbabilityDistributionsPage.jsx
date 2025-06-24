@@ -33,6 +33,7 @@ import ApplicationSimulations from './ApplicationSimulations';
 import EducationalContent from './EducationalContent';
 import SaveDistributionDialog from './SaveDistributionDialog';
 import DistributionComparison from './DistributionComparison';
+import AdvancedProbabilityDistributions from './AdvancedProbabilityDistributions';
 
 import { fetchDistributionProject, fetchDistribution, createDistributionProject } from '../../api/probabilityDistributionsApi';
 import { useErrorHandler } from '../../utils/errorHandlers';
@@ -53,9 +54,10 @@ const ProbabilityDistributionsPage = () => {
   const tabs = useMemo(() => [
     { label: 'Introduction', icon: <SchoolIcon />, value: 0 },
     { label: 'Distributions', icon: <FunctionsIcon />, value: 1 },
-    { label: 'Calculator', icon: <CalculateIcon />, value: 2 },
-    { label: 'Approximations', icon: <CompareIcon />, value: 3 },
-    { label: 'Applications', icon: <AppIcon />, value: 4 },
+    { label: 'Advanced Explorer', icon: <ChartIcon />, value: 2 },
+    { label: 'Calculator', icon: <CalculateIcon />, value: 3 },
+    { label: 'Approximations', icon: <CompareIcon />, value: 4 },
+    { label: 'Applications', icon: <AppIcon />, value: 5 },
   ], []);
   
   // State
@@ -273,7 +275,12 @@ const ProbabilityDistributionsPage = () => {
           </Box>
         );
         
-      case 2: // Calculator
+      case 2: // Advanced Explorer
+        return (
+          <AdvancedProbabilityDistributions />
+        );
+        
+      case 3: // Calculator
         return (
           <ProbabilityCalculator 
             distributionType={distributionType}
@@ -282,7 +289,7 @@ const ProbabilityDistributionsPage = () => {
           />
         );
         
-      case 3: // Approximations
+      case 4: // Approximations
         return (
           <BinomialApproximation 
             initialParameters={{
@@ -292,7 +299,7 @@ const ProbabilityDistributionsPage = () => {
           />
         );
         
-      case 4: // Applications
+      case 5: // Applications
         return (
           <ApplicationSimulations 
             distributionType={distributionType}

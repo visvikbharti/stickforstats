@@ -22,6 +22,7 @@ const SimpleNavigation = () => {
 
   const menuItems = [
     { name: 'Home', path: '/' },
+    { name: 'Statistical Analysis', path: '/statistical-analysis' },
     { name: 'Confidence Intervals', path: '/confidence-intervals' },
     { name: 'PCA Analysis', path: '/pca-analysis' },
     { name: 'DOE Analysis', path: '/doe-analysis' },

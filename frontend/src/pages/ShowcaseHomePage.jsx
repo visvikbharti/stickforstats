@@ -33,6 +33,15 @@ import { Alert } from '@mui/material';
 const ShowcaseHomePage = () => {
   const modules = [
     {
+      id: 'statistical-analysis',
+      title: 'Statistical Analysis Center',
+      description: 'Comprehensive statistical analysis tools for data exploration, hypothesis testing, and advanced analytics.',
+      icon: <AssessmentIcon fontSize="large" color="error" />,
+      path: '/statistical-analysis',
+      features: ['Descriptive Statistics', 'Hypothesis Testing', 'Regression Analysis', 'ANOVA', 'Time Series'],
+      status: 'Featured'
+    },
+    {
       id: 'confidence-intervals',
       title: 'Confidence Intervals',
       description: 'Calculate confidence intervals with multiple methods including bootstrap, Bayesian, and traditional approaches.',
@@ -130,9 +139,9 @@ const ShowcaseHomePage = () => {
               color="secondary" 
               size="large"
               component={Link}
-              to="/confidence-intervals"
+              to="/statistical-analysis"
             >
-              Try Confidence Intervals
+              Start Statistical Analysis
             </Button>
             <Button 
               variant="outlined" 

@@ -7,6 +7,7 @@ import { PieChart, BarChart, AreaChart, LineChart } from 'recharts';
 import DataUploadPage from './statistics/DataUploadPage';
 import DataExplorationPage from './statistics/DataExplorationPage';
 import StatisticalTestsPage from './statistics/StatisticalTestsPage';
+import AdvancedStatisticalTests from '../components/statistics/AdvancedStatisticalTests';
 
 // Sample data for charts
 const data = [
@@ -37,6 +38,7 @@ function StatisticsPage() {
               <Link to="/statistics/upload">Data Upload</Link>
               <Link to="/statistics/exploration">Data Exploration</Link>
               <Link to="/statistics/tests">Statistical Tests</Link>
+              <Link to="/statistics/advanced-tests">Advanced Tests</Link>
               <Link to="/probability-distributions">Probability Distributions</Link>
               <Link to="/confidence-intervals">Confidence Intervals</Link>
               <Link to="/doe-analysis">DOE Analysis</Link>
@@ -61,6 +63,7 @@ function StatisticsPage() {
               <Route path="/upload" element={<DataUploadPage />} />
               <Route path="/exploration" element={<DataExplorationPage />} />
               <Route path="/tests" element={<StatisticalTestsPage />} />
+              <Route path="/advanced-tests" element={<AdvancedStatisticalTests />} />
             </Routes>
           </Paper>
         </Grid>

@@ -72,7 +72,7 @@ const RandomSampleGenerator = ({
       
       // Validate parameters to ensure they are complete based on distribution type
       let missingParams = false;
-      if (distributionType === 'NORMAL' && (parameters.mean === undefined || parameters.std === undefined)) {
+      if (distributionType === 'NORMAL' && (parameters.mean === undefined || (parameters.std === undefined && parameters.stdDev === undefined))) {
         missingParams = true;
       } else if (distributionType === 'BINOMIAL' && (parameters.n === undefined || parameters.p === undefined)) {
         missingParams = true;
@@ -90,9 +90,16 @@ const RandomSampleGenerator = ({
         return;
       }
       
+      // Normalize parameter names for API compatibility
+      const normalizedParams = { ...parameters };
+      if (distributionType === 'NORMAL' && parameters.stdDev !== undefined) {
+        normalizedParams.std = parameters.stdDev;
+        delete normalizedParams.stdDev;
+      }
+      
       const result = await generateRandomSample(
         distributionType,
-        parameters,
+        normalizedParams,
         sampleSize,
         useSeed ? parseInt(seed) : undefined
       );

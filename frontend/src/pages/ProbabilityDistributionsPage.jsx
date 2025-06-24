@@ -30,9 +30,11 @@ const DistributionComparison = lazy(() => import('../components/probability_dist
 const LazyApplicationSimulations = lazy(() => import('../components/probability_distributions/LazyApplicationSimulations'));
 const EducationalContent = lazy(() => import('../components/probability_distributions/EducationalContent'));
 const ImageOptimizationDemo = lazy(() => import('../components/probability_distributions/ImageOptimizationDemo'));
+const AdvancedProbabilityDistributions = lazy(() => import('../components/probability_distributions/AdvancedProbabilityDistributions'));
 
 const tabsConfig = [
   { label: "Distribution Viewer", path: "" },
+  { label: "Advanced Explorer", path: "advanced-explorer" },
   { label: "Probability Calculator", path: "calculator" },
   { label: "Random Samples", path: "random-samples" },
   { label: "Data Fitting", path: "data-fitting" },
@@ -213,6 +215,10 @@ function ProbabilityDistributionsPage() {
               } />
               
               {/* Lazy-loaded components */}
+              <Route path="/advanced-explorer" element={
+                <AdvancedProbabilityDistributions />
+              } />
+              
               <Route path="/calculator" element={
                 <ProbabilityCalculator 
                   distribution={selectedDistribution}
@@ -224,7 +230,7 @@ function ProbabilityDistributionsPage() {
               
               <Route path="/random-samples" element={
                 <RandomSampleGenerator 
-                  distribution={selectedDistribution}
+                  distributionType={selectedDistribution}
                   parameters={parameters}
                 />
               } />

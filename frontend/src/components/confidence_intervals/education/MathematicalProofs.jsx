@@ -930,11 +930,11 @@ const MathematicalProofs = () => {
                           The foundation of many asymptotic confidence intervals is the Central Limit Theorem (CLT), which states that for i.i.d. samples $X_1, X_2, \ldots, X_n$ with mean $\mu$ and finite variance $\sigma^2$:
                         </Typography>
                         <MathJax>
-                          {"$$\\frac{\\sqrt{n}(\\bar{X}_n - \\mu)}{\\sigma} \\xrightarrow{d} N(0, 1) \\quad \\text{as } n \\to \\infty$$"}
+                          {"$$\\frac{\\sqrt{n}(\\bar{X}_n - \\mu)}{\\sigma} \\xrightarrow{\\text{d}} N(0, 1) \\quad \\text{as } n \\to \\infty$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 2 }}>
-                          where $\xrightarrow{d}$ denotes convergence in distribution.
+                          where $\xrightarrow{\text{d}}$ denotes convergence in distribution.
                         </Typography>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 2 }}>
@@ -962,10 +962,10 @@ const MathematicalProofs = () => {
                       
                       <Box sx={{ p: 2, bgcolor: 'background.paper', my: 2 }}>
                         <Typography variant="body2" paragraph>
-                          The Delta Method extends the CLT to functions of asymptotically normal estimators. If <MathJax inline>{"\\sqrt{n}(\\hat{\\theta}_n - \\theta) \\xrightarrow{d} N(0, \\sigma^2)"}</MathJax> and <MathJax inline>{"g"}</MathJax> is differentiable at <MathJax inline>{"\\theta"}</MathJax> with <MathJax inline>{"g'(\\theta) \\neq 0"}</MathJax>, then:
+                          The Delta Method extends the CLT to functions of asymptotically normal estimators. If <MathJax inline>{"\\sqrt{n}(\\hat{\\theta}_n - \\theta) \\xrightarrow{\\text{d}} N(0, \\sigma^2)"}</MathJax> and <MathJax inline>{"g"}</MathJax> is differentiable at <MathJax inline>{"\\theta"}</MathJax> with <MathJax inline>{"g'(\\theta) \\neq 0"}</MathJax>, then:
                         </Typography>
                         <MathJax>
-                          {"$$\\sqrt{n}(g(\\hat{\\theta}_n) - g(\\theta)) \\xrightarrow{d} N(0, [g'(\\theta)]^2 \\sigma^2)$$"}
+                          {"$$\\sqrt{n}(g(\\hat{\\theta}_n) - g(\\theta)) \\xrightarrow{\\text{d}} N(0, [g'(\\theta)]^2 \\sigma^2)$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 2 }}>
@@ -1069,7 +1069,7 @@ const MathematicalProofs = () => {
                           Based on the score function <MathJax inline>{"S(\\theta) = \\frac{\\partial}{\\partial\\theta} \\log L(\\theta; \\mathbf{X})"}</MathJax>:
                         </Typography>
                         <MathJax>
-                          {"$$\\frac{S(\\theta)^2}{\\mathcal{I}(\\theta)} \\xrightarrow{d} \\chi^2_1 \\quad \\text{as } n \\to \\infty$$"}
+                          {"$$\\frac{S(\\theta)^2}{\\mathcal{I}(\\theta)} \\xrightarrow{\\text{d}} \\chi^2_1 \\quad \\text{as } n \\to \\infty$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 1 }}>
@@ -1089,7 +1089,7 @@ const MathematicalProofs = () => {
                           Based on the likelihood ratio statistic:
                         </Typography>
                         <MathJax>
-                          {"$$-2\\log\\frac{L(\\theta; \\mathbf{X})}{L(\\hat{\\theta}; \\mathbf{X})} \\xrightarrow{d} \\chi^2_1 \\quad \\text{as } n \\to \\infty$$"}
+                          {"$$-2\\log\\frac{L(\\theta; \\mathbf{X})}{L(\\hat{\\theta}; \\mathbf{X})} \\xrightarrow{\\text{d}} \\chi^2_1 \\quad \\text{as } n \\to \\infty$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 1 }}>
@@ -1178,14 +1178,14 @@ const MathematicalProofs = () => {
                           For example, if <MathJax inline>{"\\hat{\\theta}_n"}</MathJax> is an estimator of <MathJax inline>{"\\theta"}</MathJax> with asymptotic variance <MathJax inline>{"v(\\theta)"}</MathJax>, then:
                         </Typography>
                         <MathJax>
-                          {"$$\\frac{\\sqrt{n}(\\hat{\\theta}_n - \\theta)}{\\sqrt{v(\\theta)}} \\xrightarrow{d} N(0, 1)$$"}
+                          {"$$\\frac{\\sqrt{n}(\\hat{\\theta}_n - \\theta)}{\\sqrt{v(\\theta)}} \\xrightarrow{\\text{d}} N(0, 1)$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 2 }}>
                           This is asymptotically pivotal if we know <MathJax inline>{"v(\\theta)"}</MathJax> exactly. However, if we must estimate <MathJax inline>{"v(\\theta)"}</MathJax> with <MathJax inline>{"\\hat{v}(\\hat{\\theta}_n)"}</MathJax>, then:
                         </Typography>
                         <MathJax>
-                          {"$$\\frac{\\sqrt{n}(\\hat{\\theta}_n - \\theta)}{\\sqrt{\\hat{v}(\\hat{\\theta}_n)}} \\xrightarrow{d} N(0, 1)$$"}
+                          {"$$\\frac{\\sqrt{n}(\\hat{\\theta}_n - \\theta)}{\\sqrt{\\hat{v}(\\hat{\\theta}_n)}} \\xrightarrow{\\text{d}} N(0, 1)$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 2 }}>
@@ -1206,7 +1206,7 @@ const MathematicalProofs = () => {
                           For example, the studentized mean is:
                         </Typography>
                         <MathJax>
-                          {"$$T_n = \\frac{\\sqrt{n}(\\bar{X}_n - \\mu)}{S_n} \\xrightarrow{d} N(0, 1)$$"}
+                          {"$$T_n = \\frac{\\sqrt{n}(\\bar{X}_n - \\mu)}{S_n} \\xrightarrow{\\text{d}} N(0, 1)$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph>
@@ -1231,7 +1231,7 @@ const MathematicalProofs = () => {
                           For instance, Bartlett correction adjusts the likelihood ratio statistic:
                         </Typography>
                         <MathJax>
-                          {"$$-2\\log\\Lambda \\cdot (1 - b/n) \\xrightarrow{d} \\chi^2_p$$"}
+                          {"$$-2\\log\\Lambda \\cdot (1 - b/n) \\xrightarrow{\\text{d}} \\chi^2_p$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph>

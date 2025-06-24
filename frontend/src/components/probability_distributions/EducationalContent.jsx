@@ -672,7 +672,7 @@ const HistoricalContext = React.memo(({ distributionType }) => {
 // Interactive simulations section
 const InteractiveSimulations = React.memo(({ distributionType }) => {
   return (
-    <Box>
+    <Box id="interactive-simulations">
       <Typography variant="h6" gutterBottom>
         Interactive Simulations for {distributionType && typeof distributionType === 'string' ? distributionType.replace('_', ' ') : 'Probability'} Distribution
       </Typography>
@@ -979,7 +979,13 @@ const ProbabilityFundamentals = React.memo(() => {
             <Button 
               variant="outlined" 
               color="primary"
-              onClick={() => window.open('/probability-distributions/interactive-clt', '_blank')}
+              onClick={() => {
+                // Scroll to the Interactive Simulations section
+                const element = document.getElementById('interactive-simulations');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             >
               Explore the Central Limit Theorem Interactively
             </Button>

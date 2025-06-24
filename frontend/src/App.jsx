@@ -59,6 +59,7 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const DebugLoginPage = lazy(() => import('./pages/DebugLoginPage'));
 
 // Lazy-load all other main pages to reduce initial bundle size
+const StatisticalAnalysisPage = lazy(() => import('./pages/StatisticalAnalysisPage'));
 const StatisticsPage = lazy(() => import('./pages/StatisticsPage'));
 const SQCAnalysisPage = lazy(() => import('./pages/SQCAnalysisPage'));
 const DOEAnalysisPage = lazy(() => import('./pages/DOEAnalysisPage'));
@@ -182,6 +183,18 @@ function App() {
                         <Routes>
                         {/* Home page is loaded eagerly for fast initial load */}
                         <Route path="/" element={<ShowcaseHomePage />} />
+                        
+                        {/* Main Statistical Analysis - The Core Feature */}
+                        <Route 
+                          path="/statistical-analysis" 
+                          element={
+                            <ProtectedRoute>
+                              <Suspense fallback={<LoadingComponent message="Loading Statistical Analysis Center..." />}>
+                                <StatisticalAnalysisPage />
+                              </Suspense>
+                            </ProtectedRoute>
+                          } 
+                        />
                         
                         {/* Enterprise Dashboard */}
                         <Route 

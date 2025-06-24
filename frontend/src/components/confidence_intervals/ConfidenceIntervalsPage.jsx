@@ -13,6 +13,7 @@ import RealWorldApplications from './education/RealWorldApplications';
 import MathematicalProofs from './education/MathematicalProofs';
 import References from './education/References';
 import CalculatorDashboard from './calculators/CalculatorDashboard';
+import AdvancedConfidenceIntervals from './AdvancedConfidenceIntervals';
 
 // Import styles and utility components
 import { styled } from '@mui/material/styles';
@@ -44,6 +45,7 @@ const ConfidenceIntervalsPage = () => {
   const tabs = React.useMemo(() => [
     { label: 'Overview', path: '' },
     { label: 'Calculators', path: 'calculators' },
+    { label: 'Advanced Analysis', path: 'advanced-analysis' },
     { label: 'Theory & Foundations', path: 'theory' },
     { label: 'Interactive Simulations', path: 'simulations' },
     { label: 'Advanced Methods', path: 'advanced' },
@@ -179,6 +181,7 @@ const ConfidenceIntervalsPage = () => {
           <Routes>
             <Route path="" element={<Overview onCreateProject={handleCreateProject} />} />
             <Route path="calculators" element={<CalculatorDashboard projects={projects} />} />
+            <Route path="advanced-analysis" element={<AdvancedConfidenceIntervals />} />
             <Route path="theory" element={<TheoryFoundations />} />
             <Route path="simulations" element={<InteractiveSimulations projects={projects} />} />
             <Route path="advanced" element={<AdvancedMethods />} />
