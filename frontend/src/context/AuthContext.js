@@ -20,6 +20,14 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Skip API calls in demo mode
     if (process.env.REACT_APP_DISABLE_API === 'true' || process.env.REACT_APP_DEMO_MODE === 'true') {
+      // Set a demo user in demo mode
+      setUser({
+        id: 'demo',
+        email: 'demo@stickforstats.com',
+        first_name: 'Demo',
+        last_name: 'User',
+        role: 'user'
+      });
       setLoading(false);
       return;
     }
@@ -95,6 +103,13 @@ export const AuthProvider = ({ children }) => {
     setUser(prev => ({ ...prev, ...updates }));
   };
 
+  const hasRole = (role) => {
+    if (!user) return false;
+    return user.role === role || user.role === 'admin';
+  };
+
+  const isDemoMode = process.env.REACT_APP_DISABLE_API === 'true' || process.env.REACT_APP_DEMO_MODE === 'true';
+
   const value = {
     user,
     loading,
@@ -102,7 +117,9 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateUser,
-    isAuthenticated: !!user
+    hasRole,
+    isAuthenticated: isDemoMode ? true : !!user,
+    isDemoMode
   };
 
   return (

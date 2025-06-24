@@ -28,6 +28,8 @@ import {
   Cloud as CloudIcon
 } from '@mui/icons-material';
 
+import { Alert } from '@mui/material';
+
 const ShowcaseHomePage = () => {
   const modules = [
     {
@@ -97,6 +99,11 @@ const ShowcaseHomePage = () => {
 
   return (
     <Box>
+      {/* Demo Mode Alert */}
+      <Alert severity="info" sx={{ mb: 0 }}>
+        <strong>Demo Mode Active</strong> - All modules are accessible without login for testing purposes. Backend API is disabled.
+      </Alert>
+
       {/* Hero Section */}
       <Box
         sx={{
@@ -233,7 +240,7 @@ const ShowcaseHomePage = () => {
                     fullWidth
                     variant="contained"
                   >
-                    Open Module
+                    Open Module (No Login Required)
                   </Button>
                 </CardActions>
               </Card>

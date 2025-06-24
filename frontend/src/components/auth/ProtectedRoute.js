@@ -7,6 +7,14 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
   const { user, loading, isAuthenticated } = useAuth();
   const location = useLocation();
 
+  // In demo mode, allow access without authentication
+  const isDemoMode = process.env.REACT_APP_DEMO_MODE === 'true' || process.env.REACT_APP_DISABLE_API === 'true';
+  
+  if (isDemoMode) {
+    console.log('Demo mode active - bypassing authentication');
+    return children;
+  }
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">

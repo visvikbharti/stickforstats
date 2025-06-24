@@ -9,14 +9,15 @@ import {
   Container,
   IconButton,
   Menu,
-  MenuItem
+  MenuItem,
+  Chip
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useAuth } from '../context/AuthContext';
 
 const SimpleNavigation = () => {
   const location = useLocation();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, isDemoMode } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const menuItems = [
@@ -117,7 +118,14 @@ const SimpleNavigation = () => {
 
           {/* User section */}
           <Box sx={{ flexGrow: 0 }}>
-            {isAuthenticated ? (
+            {isDemoMode ? (
+              <Chip 
+                label="Demo Mode" 
+                color="secondary" 
+                size="small"
+                sx={{ color: 'white' }}
+              />
+            ) : isAuthenticated ? (
               <Button color="inherit" onClick={logout}>
                 Logout
               </Button>
