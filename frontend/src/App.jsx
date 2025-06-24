@@ -16,7 +16,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import { BrandingProvider } from './context/BrandingContext';
 
 // Import layout components
-import Navigation from './components/Navigation';
+// import Navigation from './components/Navigation';
+import SimpleNavigation from './components/SimpleNavigation';
 import Footer from './components/Footer';
 
 // Import auth components
@@ -48,7 +49,8 @@ import {
 // Performance testing components are lazy loaded below
 
 // Import only the HomePage directly as it's crucial for first render
-import HomePage from './pages/HomePage';
+// import HomePage from './pages/HomePage';
+import ShowcaseHomePage from './pages/ShowcaseHomePage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Lazy-load authentication pages
@@ -170,7 +172,7 @@ function App() {
                         <CommandPaletteProvider>
                           <TourProvider>
                             <div className="App">
-                              <Navigation />
+                              <SimpleNavigation />
                               <CommandPalette />
                               <GlobalSearch />
                               <WelcomeModal />
@@ -179,7 +181,7 @@ function App() {
                               <main style={{ minHeight: 'calc(100vh - 120px)', padding: '0' }}>
                         <Routes>
                         {/* Home page is loaded eagerly for fast initial load */}
-                        <Route path="/" element={<HomePage />} />
+                        <Route path="/" element={<ShowcaseHomePage />} />
                         
                         {/* Enterprise Dashboard */}
                         <Route 
