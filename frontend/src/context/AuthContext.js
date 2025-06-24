@@ -18,6 +18,12 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('authToken'));
 
   useEffect(() => {
+    // Skip API calls in demo mode
+    if (process.env.REACT_APP_DISABLE_API === 'true' || process.env.REACT_APP_DEMO_MODE === 'true') {
+      setLoading(false);
+      return;
+    }
+    
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchUser();

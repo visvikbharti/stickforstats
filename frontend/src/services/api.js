@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Base API configuration
 export const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
+  baseURL: process.env.REACT_APP_API_URL || (process.env.REACT_APP_DISABLE_API === 'true' ? '' : 'http://localhost:8000'),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -11,6 +11,11 @@ export const api = axios.create({
 // Add a request interceptor to add authentication token
 api.interceptors.request.use(
   (config) => {
+    // Block all API requests in demo mode
+    if (process.env.REACT_APP_DISABLE_API === 'true' || process.env.REACT_APP_DEMO_MODE === 'true') {
+      return Promise.reject(new Error('API is disabled in demo mode'));
+    }
+    
     const token = localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Token ${token}`;

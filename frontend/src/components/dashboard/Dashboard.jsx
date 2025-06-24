@@ -57,8 +57,43 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Fetch data when component mounts
-    fetchDashboardData();
-    fetchModules();
+    // Skip API calls in demo mode or when API is disabled
+    if (process.env.REACT_APP_DISABLE_API !== 'true') {
+      fetchDashboardData();
+      fetchModules();
+    } else {
+      // Set default demo data
+      setModuleCards([
+        {
+          id: 'confidence-intervals',
+          title: 'Confidence Intervals',
+          description: 'Calculate and visualize confidence intervals',
+          icon: <FunctionsIcon fontSize="large" />,
+          path: '/confidence-intervals',
+          category: 'Analysis',
+          enabled: true
+        },
+        {
+          id: 'pca-analysis',
+          title: 'PCA Analysis',
+          description: 'Principal Component Analysis for dimensionality reduction',
+          icon: <AssessmentIcon fontSize="large" />,
+          path: '/pca-analysis',
+          category: 'Analysis',
+          enabled: true
+        },
+        {
+          id: 'doe-analysis',
+          title: 'DOE Analysis',
+          description: 'Design of Experiments analysis',
+          icon: <AssessmentIcon fontSize="large" />,
+          path: '/doe-analysis',
+          category: 'Analysis',
+          enabled: true
+        }
+      ]);
+      setLoading(false);
+    }
   }, []);
 
   const fetchDashboardData = async () => {
