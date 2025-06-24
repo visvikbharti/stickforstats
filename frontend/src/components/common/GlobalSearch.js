@@ -28,16 +28,18 @@ import { useNavigate } from 'react-router-dom';
 
 const GlobalSearch = () => {
   const anchorRef = useRef(null);
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const {
     searchQuery,
     searchResults,
     isSearching,
+    isSearchOpen,
     searchHistory,
     performSearch,
     clearSearch,
-    navigateToResult
+    navigateToResult,
+    openSearch,
+    closeSearch
   } = useSearch();
 
   const [localQuery, setLocalQuery] = useState('');
@@ -46,9 +48,9 @@ const GlobalSearch = () => {
     const delayDebounceFn = setTimeout(() => {
       if (localQuery.trim()) {
         performSearch(localQuery);
-        setOpen(true);
+        openSearch();
       } else {
-        setOpen(false);
+        closeSearch();
       }
     }, 300);
 
@@ -110,7 +112,7 @@ const GlobalSearch = () => {
           onChange={(e) => setLocalQuery(e.target.value)}
           onFocus={() => {
             if (localQuery || searchHistory.length > 0) {
-              setOpen(true);
+              openSearch();
             }
           }}
         />
@@ -127,12 +129,12 @@ const GlobalSearch = () => {
       </Paper>
 
       <Popper
-        open={open}
+        open={isSearchOpen}
         anchorEl={anchorRef.current}
         placement="bottom-start"
         style={{ zIndex: 1300 }}
       >
-        <ClickAwayListener onClickAway={() => setOpen(false)}>
+        <ClickAwayListener onClickAway={() => closeSearch()}>
           <Paper
             sx={{
               width: anchorRef.current?.offsetWidth || 400,

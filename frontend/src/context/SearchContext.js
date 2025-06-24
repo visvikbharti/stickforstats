@@ -16,6 +16,7 @@ export const SearchProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchHistory, setSearchHistory] = useState(() => {
     const saved = localStorage.getItem('searchHistory');
     return saved ? JSON.parse(saved) : [];
@@ -71,15 +72,27 @@ export const SearchProvider = ({ children }) => {
     clearSearch();
   }, [navigate, clearSearch]);
 
+  const openSearch = useCallback(() => {
+    setIsSearchOpen(true);
+  }, []);
+
+  const closeSearch = useCallback(() => {
+    setIsSearchOpen(false);
+    clearSearch();
+  }, [clearSearch]);
+
   const value = {
     searchQuery,
     searchResults,
     isSearching,
+    isSearchOpen,
     searchHistory,
     performSearch,
     clearSearch,
     clearHistory,
-    navigateToResult
+    navigateToResult,
+    openSearch,
+    closeSearch
   };
 
   return (
