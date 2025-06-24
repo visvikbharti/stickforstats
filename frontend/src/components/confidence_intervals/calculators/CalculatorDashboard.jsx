@@ -18,6 +18,7 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import { useAuth } from '../../../context/AuthContext';
 
 // Import calculator components
 import SampleBasedCalculator from './SampleBasedCalculator';
@@ -32,9 +33,10 @@ import IntervalVisualization from '../visualizations/IntervalVisualization';
 /**
  * Dashboard component for confidence interval calculators
  */
-const CalculatorDashboard = ({ projects }) => {
+const CalculatorDashboard = ({ projects = [] }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { enqueueSnackbar } = useSnackbar();
+  const { isDemoMode } = useAuth();
   
   // State variables
   const [activeTab, setActiveTab] = useState(0);
@@ -55,12 +57,12 @@ const CalculatorDashboard = ({ projects }) => {
   // Effect to set initial project from URL params
   useEffect(() => {
     const projectId = searchParams.get('project');
-    if (projectId && projects.length > 0) {
+    if (projectId && Array.isArray(projects) && projects.length > 0) {
       const project = projects.find(p => p.id === projectId);
       if (project) {
         setSelectedProject(project);
       }
-    } else if (projects.length > 0 && !selectedProject) {
+    } else if (Array.isArray(projects) && projects.length > 0 && !selectedProject) {
       setSelectedProject(projects[0]);
     }
   }, [projects, searchParams, selectedProject]);
@@ -71,24 +73,76 @@ const CalculatorDashboard = ({ projects }) => {
     
     const fetchProjectData = async () => {
       setLoading(true);
+      
+      // In demo mode, use mock data
+      if (isDemoMode) {
+        const mockData = [
+          {
+            id: 'demo-data-1',
+            name: 'Sample Dataset 1',
+            values: [23.5, 24.1, 22.8, 25.2, 23.9, 24.6, 23.3, 24.8, 25.1, 23.7],
+            type: 'continuous',
+            project: selectedProject.id
+          },
+          {
+            id: 'demo-data-2',
+            name: 'Sample Proportions',
+            successes: 45,
+            trials: 100,
+            type: 'proportion',
+            project: selectedProject.id
+          }
+        ];
+        
+        const mockResults = [
+          {
+            id: 'demo-result-1',
+            timestamp: new Date(Date.now() - 86400000).toISOString(),
+            method: 'Sample Mean',
+            confidence_level: 0.95,
+            lower_bound: 23.2,
+            upper_bound: 24.8,
+            point_estimate: 24.0,
+            data_name: 'Sample Dataset 1'
+          },
+          {
+            id: 'demo-result-2',
+            timestamp: new Date(Date.now() - 3600000).toISOString(),
+            method: 'Proportion',
+            confidence_level: 0.95,
+            lower_bound: 0.35,
+            upper_bound: 0.55,
+            point_estimate: 0.45,
+            data_name: 'Sample Proportions'
+          }
+        ];
+        
+        setProjectData(mockData);
+        setResults(mockResults);
+        setLoading(false);
+        return;
+      }
+      
       try {
         // Fetch the project's saved data
         const response = await axios.get(`/api/v1/confidence-intervals/data/?project=${selectedProject.id}`);
-        setProjectData(response.data);
+        setProjectData(Array.isArray(response.data) ? response.data : []);
         
         // Fetch the project's calculation results
         const resultsResponse = await axios.get(`/api/v1/confidence-intervals/results/?project=${selectedProject.id}`);
-        setResults(resultsResponse.data);
+        setResults(Array.isArray(resultsResponse.data) ? resultsResponse.data : []);
       } catch (error) {
         console.error('Error fetching project data:', error);
         enqueueSnackbar('Failed to load project data', { variant: 'error' });
+        setProjectData([]);
+        setResults([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProjectData();
-  }, [selectedProject, enqueueSnackbar]);
+  }, [selectedProject, enqueueSnackbar, isDemoMode]);
 
   // Handle tab change
   const handleTabChange = (event, newValue) => {
@@ -97,9 +151,11 @@ const CalculatorDashboard = ({ projects }) => {
 
   // Handle project change
   const handleProjectChange = (event) => {
-    const project = projects.find(p => p.id === event.target.value);
-    setSelectedProject(project);
-    setSearchParams({ project: project.id });
+    const project = Array.isArray(projects) ? projects.find(p => p.id === event.target.value) : null;
+    if (project) {
+      setSelectedProject(project);
+      setSearchParams({ project: project.id });
+    }
   };
 
   // Handle saving a new calculation result
@@ -110,6 +166,13 @@ const CalculatorDashboard = ({ projects }) => {
 
   // Remove a result
   const handleRemoveResult = async (resultId) => {
+    // In demo mode, just remove from state
+    if (isDemoMode) {
+      setResults(results.filter(r => r.id !== resultId));
+      enqueueSnackbar('Result removed successfully', { variant: 'success' });
+      return;
+    }
+    
     try {
       await axios.delete(`/api/confidence-intervals/results/${resultId}/`);
       setResults(results.filter(r => r.id !== resultId));
@@ -156,74 +219,65 @@ const CalculatorDashboard = ({ projects }) => {
     
     return (
       <Box>
-        {recentResults.map((result) => (
-          <Paper 
-            key={result.id} 
-            elevation={2} 
-            sx={{ p: 2, mb: 2, position: 'relative' }}
-          >
-            <Typography variant="subtitle2">
-              {getIntervalTypeLabel(result.interval_type)}
-            </Typography>
-            
-            <IntervalVisualization 
-              result={result} 
-              height={100} 
-              showDistribution={false} 
-            />
-
-            <Grid container spacing={1} alignItems="center">
-              <Grid item>
-                <Chip 
-                  size="small" 
-                  label={`${(result.result.confidence_level || 0.95) * 100}% CI`} 
-                  color="primary" 
-                  variant="outlined" 
-                />
-              </Grid>
-              <Grid item>
-                {result.result.mean !== undefined && (
+        {recentResults.map((result) => {
+          // Handle different result structures (API vs demo)
+          const confidenceLevel = result.confidence_level || result.result?.confidence_level || 0.95;
+          const lowerBound = result.lower_bound ?? result.result?.lower ?? result.lower;
+          const upperBound = result.upper_bound ?? result.result?.upper ?? result.upper;
+          const pointEstimate = result.point_estimate ?? result.result?.mean ?? result.result?.proportion ?? result.result?.statistic;
+          const method = result.method || result.interval_type || 'Unknown';
+          
+          return (
+            <Paper 
+              key={result.id} 
+              elevation={2} 
+              sx={{ p: 2, mb: 2, position: 'relative' }}
+            >
+              <Typography variant="subtitle2" gutterBottom>
+                {method} - {result.data_name || 'Unnamed Data'}
+              </Typography>
+              
+              <Grid container spacing={1} alignItems="center">
+                <Grid item xs={12}>
                   <Chip 
                     size="small" 
-                    label={`Mean: ${result.result.mean.toFixed(4)}`} 
+                    label={`${(confidenceLevel * 100)}% CI`} 
+                    color="primary" 
                     variant="outlined" 
                   />
-                )}
-                {result.result.proportion !== undefined && (
-                  <Chip 
+                </Grid>
+                <Grid item xs={12}>
+                  {pointEstimate !== undefined && (
+                    <Typography variant="body2">
+                      Point Estimate: {typeof pointEstimate === 'number' ? pointEstimate.toFixed(4) : pointEstimate}
+                    </Typography>
+                  )}
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                    CI: [{typeof lowerBound === 'number' ? lowerBound.toFixed(4) : lowerBound}, {typeof upperBound === 'number' ? upperBound.toFixed(4) : upperBound}]
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="caption" color="text.secondary">
+                    {new Date(result.timestamp).toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button 
                     size="small" 
-                    label={`Proportion: ${result.result.proportion.toFixed(4)}`} 
-                    variant="outlined" 
-                  />
-                )}
-                {result.result.statistic !== undefined && (
-                  <Chip 
-                    size="small" 
-                    label={`Statistic: ${result.result.statistic.toFixed(4)}`} 
-                    variant="outlined" 
-                  />
-                )}
+                    color="error" 
+                    variant="text" 
+                    onClick={() => handleRemoveResult(result.id)}
+                    fullWidth
+                  >
+                    Remove
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Chip 
-                  size="small" 
-                  label={`CI: [${result.result.lower.toFixed(4)}, ${result.result.upper.toFixed(4)}]`} 
-                  variant="outlined" 
-                />
-              </Grid>
-              <Grid item sx={{ ml: 'auto' }}>
-                <Button 
-                  size="small" 
-                  color="error" 
-                  variant="text" 
-                  onClick={() => handleRemoveResult(result.id)}
-                >
-                  Remove
-                </Button>
-              </Grid>
-            </Grid>
-          </Paper>
-        ))}
+            </Paper>
+          );
+        })}
       </Box>
     );
   };
@@ -271,9 +325,9 @@ const CalculatorDashboard = ({ projects }) => {
                 value={selectedProject?.id || ''}
                 label="Project"
                 onChange={handleProjectChange}
-                disabled={projects.length === 0}
+                disabled={!Array.isArray(projects) || projects.length === 0}
               >
-                {projects.map((project) => (
+                {Array.isArray(projects) && projects.map((project) => (
                   <MenuItem key={project.id} value={project.id}>
                     {project.name}
                   </MenuItem>

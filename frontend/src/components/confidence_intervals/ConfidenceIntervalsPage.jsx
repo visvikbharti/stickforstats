@@ -3,6 +3,7 @@ import { Tabs, Tab, Box, Typography, Container, Paper, Button } from '@mui/mater
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../../config/apiConfig';
+import { useAuth } from '../../context/AuthContext';
 
 // Import sub-components
 import TheoryFoundations from './education/TheoryFoundations';
@@ -34,6 +35,7 @@ const ConfidenceIntervalsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
+  const { isDemoMode } = useAuth();
   const [activeTab, setActiveTab] = useState(0);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -64,19 +66,46 @@ const ConfidenceIntervalsPage = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       setLoading(true);
+      
+      // In demo mode, use mock projects
+      if (isDemoMode) {
+        const mockProjects = [
+          {
+            id: 'demo-project-1',
+            name: 'Sample Analysis Project',
+            description: 'Demo project for exploring confidence intervals',
+            settings: { default_confidence_level: 0.95 },
+            created_at: new Date().toISOString(),
+            data_count: 3
+          },
+          {
+            id: 'demo-project-2',
+            name: 'Clinical Trial Data',
+            description: 'Example clinical trial confidence interval analysis',
+            settings: { default_confidence_level: 0.99 },
+            created_at: new Date().toISOString(),
+            data_count: 5
+          }
+        ];
+        setProjects(mockProjects);
+        setLoading(false);
+        return;
+      }
+      
       try {
         const response = await axios.get(`${API_URL}/confidence-intervals/projects/`);
-        setProjects(response.data);
+        setProjects(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching projects:', error);
         enqueueSnackbar('Failed to load projects', { variant: 'error' });
+        setProjects([]); // Ensure projects is always an array
       } finally {
         setLoading(false);
       }
     };
 
     fetchProjects();
-  }, [enqueueSnackbar]);
+  }, [enqueueSnackbar, isDemoMode]);
 
   // Handle tab change
   const handleTabChange = (event, newValue) => {
@@ -86,6 +115,23 @@ const ConfidenceIntervalsPage = () => {
 
   // Create a new project
   const handleCreateProject = async () => {
+    // In demo mode, create a mock project
+    if (isDemoMode) {
+      const newProject = {
+        id: `demo-project-${Date.now()}`,
+        name: `Confidence Interval Project ${projects.length + 1}`,
+        description: 'A new confidence interval project',
+        settings: { default_confidence_level: 0.95 },
+        created_at: new Date().toISOString(),
+        data_count: 0
+      };
+      
+      setProjects([...projects, newProject]);
+      enqueueSnackbar('Demo project created successfully', { variant: 'success' });
+      navigate(`/confidence-intervals/calculators?project=${newProject.id}`);
+      return;
+    }
+    
     try {
       const response = await axios.post(`${API_URL}/confidence-intervals/projects/`, {
         name: `Confidence Interval Project ${projects.length + 1}`,

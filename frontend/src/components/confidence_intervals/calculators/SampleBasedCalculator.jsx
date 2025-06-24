@@ -28,6 +28,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import Papa from 'papaparse'; // For CSV parsing
+import { useAuth } from '../../../context/AuthContext';
 
 // Import visualization component
 import IntervalVisualization from '../visualizations/IntervalVisualization';
@@ -37,6 +38,7 @@ import IntervalVisualization from '../visualizations/IntervalVisualization';
  */
 const SampleBasedCalculator = ({ project, projectData, onSaveResult }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { isDemoMode } = useAuth();
   
   // State for loading and calculation status
   const [loading, setLoading] = useState(false);
@@ -209,6 +211,23 @@ const SampleBasedCalculator = ({ project, projectData, onSaveResult }) => {
     
     setLoading(true);
     
+    // In demo mode, simulate saving
+    if (isDemoMode) {
+      const mockSavedData = {
+        id: `demo-data-${Date.now()}`,
+        name: dataName,
+        data_type: intervalTypes.find(t => t.value === intervalType)?.dataType === 'binary' ? 'CATEGORICAL' : 'NUMERIC',
+        numeric_data: parsedData,
+        project: project.id
+      };
+      
+      enqueueSnackbar('Data saved successfully (Demo)', { variant: 'success' });
+      setSelectedDataId(mockSavedData.id);
+      setDataSource('SAVED');
+      setLoading(false);
+      return;
+    }
+    
     try {
       const dataType = intervalTypes.find(t => t.value === intervalType)?.dataType === 'binary'
         ? 'CATEGORICAL'
@@ -256,6 +275,46 @@ const SampleBasedCalculator = ({ project, projectData, onSaveResult }) => {
     }
     
     setCalculating(true);
+    
+    // In demo mode, calculate locally
+    if (isDemoMode) {
+      try {
+        // Simulate calculation with mock results
+        const data = parsedData.length > 0 ? parsedData : [23, 24, 25, 26, 27, 28, 29, 30];
+        const mean = data.reduce((a, b) => a + b, 0) / data.length;
+        const std = Math.sqrt(data.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / (data.length - 1));
+        const n = data.length;
+        const se = std / Math.sqrt(n);
+        const t = 1.96; // For 95% CI approximation
+        
+        const mockResult = {
+          interval_type: intervalType,
+          confidence_level: confidenceLevel,
+          sample_size: n,
+          result: {
+            mean: mean,
+            std: std,
+            se: se,
+            lower: mean - t * se,
+            upper: mean + t * se,
+            confidence_level: confidenceLevel
+          },
+          method_details: {
+            method: intervalTypes.find(t => t.value === intervalType)?.label || 'Sample Mean',
+            assumptions: ['Data is normally distributed', 'Sample is representative']
+          }
+        };
+        
+        setResult(mockResult);
+        setSavedResult(null);
+        enqueueSnackbar('Calculation completed successfully (Demo)', { variant: 'success' });
+      } catch (error) {
+        enqueueSnackbar('Error in demo calculation', { variant: 'error' });
+      } finally {
+        setCalculating(false);
+      }
+      return;
+    }
     
     try {
       const requestData = {

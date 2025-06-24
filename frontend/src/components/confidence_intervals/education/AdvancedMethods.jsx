@@ -30,6 +30,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CodeIcon from '@mui/icons-material/Code';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import axios from 'axios';
+import { useAuth } from '../../../context/AuthContext';
 
 // Import for rendering math formulas
 import { MathJaxContext, MathJax } from 'better-react-mathjax';
@@ -42,22 +43,43 @@ const AdvancedMethods = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [educationalContent, setEducationalContent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { isDemoMode } = useAuth();
   
   // Fetch educational content from the backend
   useEffect(() => {
     const fetchContent = async () => {
+      // In demo mode, use mock educational content
+      if (isDemoMode) {
+        const mockContent = [
+          {
+            id: 'demo-1',
+            title: 'Bootstrap Confidence Intervals - Advanced Tutorial',
+            content: 'Bootstrap methods provide a powerful approach to constructing confidence intervals without making strong distributional assumptions. The basic principle involves resampling from your data with replacement to estimate the sampling distribution of your statistic.'
+          },
+          {
+            id: 'demo-2',
+            title: 'Bayesian Credible Intervals',
+            content: 'Bayesian credible intervals represent the uncertainty in parameter estimates from a Bayesian perspective. Unlike frequentist confidence intervals, credible intervals have a direct probability interpretation: there is a specified probability that the parameter lies within the interval.'
+          }
+        ];
+        setEducationalContent(mockContent);
+        setLoading(false);
+        return;
+      }
+      
       try {
         const response = await axios.get('/api/v1/confidence-intervals/educational/?section=ADVANCED');
-        setEducationalContent(response.data);
+        setEducationalContent(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching educational content:', error);
+        setEducationalContent([]); // Ensure it's always an array
       } finally {
         setLoading(false);
       }
     };
     
     fetchContent();
-  }, []);
+  }, [isDemoMode]);
 
   // Handle tab change
   const handleTabChange = (event, newValue) => {
@@ -1246,17 +1268,24 @@ run;`}
             )}
             
             {/* Custom Educational Content */}
-            {educationalContent.map((content) => (
-              <Paper key={content.id} elevation={2} sx={{ p: 3, mb: 3 }}>
+            {Array.isArray(educationalContent) && educationalContent.length > 0 && (
+              <Box sx={{ mt: 3 }}>
                 <Typography variant="h6" gutterBottom>
-                  {content.title}
+                  Additional Educational Resources
                 </Typography>
-                
-                <MathJax>
-                  {content.content}
-                </MathJax>
-              </Paper>
-            ))}
+                {educationalContent.map((content) => (
+                  <Paper key={content.id} elevation={2} sx={{ p: 3, mb: 3 }}>
+                    <Typography variant="h6" gutterBottom>
+                      {content.title}
+                    </Typography>
+                    
+                    <MathJax>
+                      {content.content}
+                    </MathJax>
+                  </Paper>
+                ))}
+              </Box>
+            )}
           </Box>
         )}
       </Box>
