@@ -241,7 +241,7 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
       </Box>
       <Divider />
       <List>
-        {pages.map((page) => (
+        {pages && pages.map((page) => (
           <DrawerListItem 
             key={page.name} 
             page={page} 
@@ -263,7 +263,7 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
             }} 
           />
         </ListItem>
-        {testPages.map((page) => (
+        {testPages && testPages.map((page) => (
           <DrawerListItem 
             key={page.name} 
             page={page} 
@@ -285,7 +285,7 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
             }} 
           />
         </ListItem>
-        {monitoringPages.map((page) => (
+        {monitoringPages && monitoringPages.map((page) => (
           <DrawerListItem 
             key={page.name} 
             page={page} 
@@ -309,7 +309,7 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
                 }} 
               />
             </ListItem>
-            {adminPages.map((page) => (
+            {adminPages && adminPages.map((page) => (
               <DrawerListItem 
                 key={page.name} 
                 page={page} 
@@ -480,44 +480,44 @@ const Navigation = () => {
 
   // Memoized navigation buttons
   const navigationButtons = useMemo(() => (
-    pages.map((page) => (
+    pages && Array.isArray(pages) ? pages.map((page) => (
       <NavButton 
         key={page.name} 
         page={page} 
         isActive={location.pathname === page.path} 
       />
-    ))
+    )) : []
   ), [location.pathname]);
 
   // Memoized user menu items
   const userMenuItems = useMemo(() => (
-    userSettings.map((setting) => (
+    userSettings && Array.isArray(userSettings) ? userSettings.map((setting) => (
       <UserMenuItem key={setting} setting={setting} onClick={() => handleUserMenuClick(setting)} />
-    ))
+    )) : []
   ), [handleUserMenuClick]);
 
   // Memoized dev menu items
   const devMenuItems = useMemo(() => (
-    testPages.map((page) => (
+    testPages && Array.isArray(testPages) ? testPages.map((page) => (
       <DevMenuItem 
         key={page.name} 
         page={page} 
         onClick={handleCloseDevMenu}
         selected={location.pathname === page.path}
       />
-    ))
+    )) : []
   ), [location.pathname, handleCloseDevMenu]);
   
   // Memoized monitoring menu items
   const monitoringMenuItems = useMemo(() => (
-    monitoringPages.map((page) => (
+    monitoringPages && Array.isArray(monitoringPages) ? monitoringPages.map((page) => (
       <DevMenuItem 
         key={page.name} 
         page={page} 
         onClick={handleCloseMonitoringMenu}
         selected={location.pathname === page.path}
       />
-    ))
+    )) : []
   ), [location.pathname, handleCloseMonitoringMenu]);
 
   // Memoized drawer content
