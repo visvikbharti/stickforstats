@@ -33,6 +33,7 @@ const translations = {
     'common.info': 'Info',
     
     // App
+    'app.name': 'StickForStats',
     'app.title': 'StickForStats',
     'app.tagline': 'Statistical Analysis Made Simple',
     'app.welcome': 'Welcome to StickForStats',
@@ -46,6 +47,22 @@ const translations = {
     'feature.export': 'Export Results',
     'feature.automation': 'Workflow Automation',
     
+    // Modules
+    'modules.title': 'Available Modules',
+    'modules.description': 'Choose from our comprehensive suite of statistical analysis tools',
+    'modules.confidenceIntervals.title': 'Confidence Intervals',
+    'modules.confidenceIntervals.description': 'Calculate and visualize confidence intervals for your data',
+    'modules.probability.title': 'Probability Distributions',
+    'modules.probability.description': 'Explore and analyze various probability distributions',
+    'modules.pca.title': 'PCA Analysis',
+    'modules.pca.description': 'Principal Component Analysis for dimensionality reduction',
+    'modules.doe.title': 'DOE Analysis',
+    'modules.doe.description': 'Design of Experiments for systematic investigation',
+    'modules.sqc.title': 'SQC Analysis',
+    'modules.sqc.description': 'Statistical Quality Control for process monitoring',
+    'modules.statistics.description': 'Access comprehensive statistical analysis tools for complex data analysis',
+    'modules.categories.advanced': 'Advanced Statistics',
+    
     // Analysis
     'analysis.confidence': 'Confidence Intervals',
     'analysis.doe': 'Design of Experiments',
@@ -54,6 +71,15 @@ const translations = {
     'analysis.sqc': 'Statistical Quality Control',
     'analysis.regression': 'Regression Analysis',
     
+    // Common messages and labels
+    'common.messages.welcome': 'Welcome back, {{name}}!',
+    'common.labels.researcher': 'Researcher',
+    
+    // Home page specific
+    'home.readyToContinue': 'Ready to continue your analysis?',
+    'home.openStatistics': 'Open Statistics',
+    'home.myWorkflows': 'My Workflows',
+    
     // Actions
     'action.startAnalysis': 'Start Analysis',
     'action.viewResults': 'View Results',
@@ -61,6 +87,37 @@ const translations = {
     'action.shareResults': 'Share Results',
     'action.downloadData': 'Download Data',
     'action.uploadFile': 'Upload File',
+    
+    // Module titles and descriptions
+    'modules.title': 'Statistical Modules',
+    'modules.description': 'Choose from our comprehensive suite of statistical analysis tools',
+    'modules.confidenceIntervals.title': 'Confidence Intervals',
+    'modules.confidenceIntervals.description': 'Calculate and visualize confidence intervals for your data',
+    'modules.probability.title': 'Probability Distributions',
+    'modules.probability.description': 'Analyze and visualize various probability distributions',
+    'modules.pca.title': 'Principal Component Analysis',
+    'modules.pca.description': 'Reduce dimensionality and identify patterns in complex datasets',
+    'modules.doe.title': 'Design of Experiments',
+    'modules.doe.description': 'Plan and analyze experiments with statistical rigor',
+    'modules.sqc.title': 'Statistical Quality Control',
+    'modules.sqc.description': 'Monitor and control quality with statistical process control tools',
+    'modules.statistics.title': 'Advanced Statistics',
+    'modules.statistics.description': 'Access comprehensive statistical analysis tools for complex data analysis',
+    'modules.categories.advanced': 'Advanced Statistics',
+    
+    // Navigation and common labels
+    'navigation.login': 'Login',
+    'app.name': 'StickForStats',
+    'common.messages.welcome': 'Welcome, {{name}}!',
+    'common.labels.researcher': 'Researcher',
+    'common.labels.loginRequired': 'Login Required',
+    
+    // Home page specific
+    'home.readyToContinue': 'Ready to continue your analysis?',
+    'home.openStatistics': 'Open Statistics',
+    'home.myWorkflows': 'My Workflows',
+    'home.joinResearchers': 'Join thousands of researchers using our platform',
+    'home.getStartedFree': 'Get Started Free',
   },
   es: {
     // Navigation
@@ -208,9 +265,24 @@ export const useTranslation = () => {
   }, []);
 
   // Translation function
-  const t = useCallback((key, params = {}) => {
+  const t = useCallback((key, paramsOrFallback = {}, fallback = null) => {
+    // Handle the case where second parameter is a fallback string
+    let params = {};
+    let defaultText = key;
+    
+    if (typeof paramsOrFallback === 'string') {
+      // Second parameter is a fallback string
+      defaultText = paramsOrFallback;
+    } else if (typeof paramsOrFallback === 'object' && paramsOrFallback !== null) {
+      // Second parameter is params object
+      params = paramsOrFallback;
+      if (fallback) {
+        defaultText = fallback;
+      }
+    }
+    
     const langTranslations = translations[language] || translations.en;
-    let text = langTranslations[key] || translations.en[key] || key;
+    let text = langTranslations[key] || translations.en[key] || defaultText;
     
     // Replace parameters in the translation
     Object.keys(params).forEach(param => {

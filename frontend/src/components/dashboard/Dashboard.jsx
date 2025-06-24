@@ -35,7 +35,8 @@ import {
   Add as AddIcon,
   Upload as UploadIcon,
   QuestionAnswer as QuestionAnswerIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
+  Assessment as AssessmentIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
