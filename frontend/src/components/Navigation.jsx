@@ -398,6 +398,7 @@ const RagDialog = React.memo(({ open, onClose }) => (
  * Main navigation component for the application
  */
 const Navigation = () => {
+  try {
   const { t } = useTranslation('common');
   // We don't use anchorElNav in the simplified sidebar navigation
   // eslint-disable-next-line no-unused-vars
@@ -571,7 +572,7 @@ const Navigation = () => {
                 textDecoration: 'none',
               }}
             >
-              {useBranding()?.branding?.organizationName || 'StickForStats'}
+              {'StickForStats'}
             </Typography>
 
             {/* Mobile hamburger menu */}
@@ -792,6 +793,21 @@ const Navigation = () => {
       {memoizedRagDialog}
     </>
   );
+  } catch (error) {
+    console.error('Navigation component error:', error);
+    // Return a minimal navigation that won't crash
+    return (
+      <AppBar position="fixed" sx={{ backgroundColor: 'rgba(18, 18, 18, 0.95)' }}>
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              StickForStats
+            </Typography>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    );
+  }
 };
 
 export default Navigation;
