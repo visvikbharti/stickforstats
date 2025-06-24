@@ -398,25 +398,18 @@ const RagDialog = React.memo(({ open, onClose }) => (
  * Main navigation component for the application
  */
 const Navigation = () => {
-  try {
+  // All hooks must be called at the top level, before any conditional logic
   const { t } = useTranslation('common');
-  // We don't use anchorElNav in the simplified sidebar navigation
-  // eslint-disable-next-line no-unused-vars
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [ragDialogOpen, setRagDialogOpen] = useState(false);
   const [devMenuOpen, setDevMenuOpen] = useState(null);
   const [monitoringMenuOpen, setMonitoringMenuOpen] = useState(null);
-
   const location = useLocation();
   const theme = useTheme();
-  useMediaQuery(theme.breakpoints.down('md'));
-  
-  // Get auth state
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user, isAuthenticated, logout, hasRole } = useAuth();
-  
-  // Get search context
   const { openSearch } = useSearch();
 
   // Memoized event handlers
@@ -547,9 +540,11 @@ const Navigation = () => {
     <RagDialog open={ragDialogOpen} onClose={handleCloseRagDialog} />
   ), [ragDialogOpen, handleCloseRagDialog]);
 
-  return (
-    <>
-      <AppBar position="static">
+  // Wrap the JSX return in try-catch, not the hooks
+  try {
+    return (
+      <>
+        <AppBar position="static">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             {/* Logo for desktop */}
