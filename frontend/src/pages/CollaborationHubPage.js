@@ -16,6 +16,7 @@ import {
   ListItemAvatar,
   ListItemText,
   ListItemSecondaryAction,
+  ListItemIcon,
   IconButton,
   Chip,
   TextField,
