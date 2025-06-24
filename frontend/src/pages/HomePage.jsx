@@ -164,7 +164,7 @@ function HomePage() {
           {t('modules.description')}
         </Typography>
         <Grid container spacing={4} sx={{ mt: 4 }}>
-          {modules.map((module) => (
+          {modules && modules.length > 0 ? modules.map((module) => (
             <Grid item key={module.id} xs={12} sm={6} md={4}>
               <Card 
                 sx={{ 
@@ -221,7 +221,7 @@ function HomePage() {
                 </CardActions>
               </Card>
             </Grid>
-          ))}
+          )) : null}
         </Grid>
       </Container>
 

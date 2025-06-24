@@ -82,8 +82,8 @@ const Dashboard = () => {
     try {
       const response = await api.get('/api/v1/core/modules/');
       
-      // Map modules to card data
-      const cards = response.data.map(module => ({
+      // Map modules to card data with defensive check
+      const cards = Array.isArray(response.data) ? response.data.map(module => ({
         id: module.name,
         title: module.display_name || module.name,
         description: module.description || `Statistical analysis using ${module.name}`,
@@ -91,7 +91,7 @@ const Dashboard = () => {
         path: module.frontend_path || `/modules/${module.name}`,
         category: module.category || 'Analysis',
         enabled: module.enabled !== false
-      }));
+      })) : [];
       
       setModuleCards(cards);
     } catch (err) {
