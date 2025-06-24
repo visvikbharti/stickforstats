@@ -82,8 +82,8 @@ import { useSearch } from '../context/SearchContext';
 // Import translation hook
 import { useTranslation } from '../hooks/useTranslation';
 
-// Memoized constant arrays
-const pages = [
+// Memoized constant arrays - ensure they are always arrays
+const pages = Object.freeze([
   { name: 'Home', path: '/' },
   { name: 'Statistics', path: '/statistics' },
   { name: 'Advanced Statistics', path: '/advanced-statistics' },
@@ -99,25 +99,47 @@ const pages = [
   { name: 'ML Studio', path: '/ml-studio' },
   { name: 'Collaboration', path: '/collaboration' },
   { name: 'Marketplace', path: '/marketplace' }
-];
+]);
 
 const testPages = [
-  { name: 'Test Calculator', path: '/test/calculator', icon: <CalculateIcon /> },
-  { name: 'Performance Testing', path: '/test/performance', icon: <SpeedIcon /> }
+  { name: 'Test Calculator', path: '/test/calculator', iconName: 'calculate' },
+  { name: 'Performance Testing', path: '/test/performance', iconName: 'speed' }
 ];
 
 const monitoringPages = [
-  { name: 'WebSocket Monitor', path: '/monitoring/websocket', icon: <NetworkCheckIcon /> },
-  { name: 'RAG Performance', path: '/monitoring/rag-performance', icon: <StorageIcon /> }
+  { name: 'WebSocket Monitor', path: '/monitoring/websocket', iconName: 'network' },
+  { name: 'RAG Performance', path: '/monitoring/rag-performance', iconName: 'storage' }
 ];
 
 const adminPages = [
-  { name: 'Security Dashboard', path: '/security', icon: <SecurityIcon /> },
-  { name: 'Branding Settings', path: '/admin/branding', icon: <BgColorsOutlined /> },
-  { name: 'Admin Panel', path: '/admin', icon: <AdminPanelSettingsIcon /> }
+  { name: 'Security Dashboard', path: '/security', iconName: 'security' },
+  { name: 'Branding Settings', path: '/admin/branding', iconName: 'palette' },
+  { name: 'Admin Panel', path: '/admin', iconName: 'admin' }
 ];
 
 const userSettings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+// Helper function to get icon from icon name
+const getIconFromName = (iconName) => {
+  switch (iconName) {
+    case 'calculate':
+      return <CalculateIcon />;
+    case 'speed':
+      return <SpeedIcon />;
+    case 'network':
+      return <NetworkCheckIcon />;
+    case 'storage':
+      return <StorageIcon />;
+    case 'security':
+      return <SecurityIcon />;
+    case 'palette':
+      return <BgColorsOutlined />;
+    case 'admin':
+      return <AdminPanelSettingsIcon />;
+    default:
+      return <BarChartIcon />;
+  }
+};
 
 // Helper function to get icon for page - moved outside component
 const getIconForPage = (pageName) => {
@@ -173,7 +195,7 @@ const DevMenuItem = React.memo(({ page, onClick, selected }) => (
     selected={selected}
   >
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ mr: 1 }}>{page.icon}</Box>
+      <Box sx={{ mr: 1 }}>{getIconFromName(page.iconName)}</Box>
       <Typography textAlign="center">{page.name}</Typography>
     </Box>
   </MenuItem>
@@ -218,7 +240,37 @@ const DrawerListItem = React.memo(({ page, icon, isActive, prefetchStrategy = "v
 ));
 
 // Memoized drawer content component
-const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPages, location, toggleDrawer, handleOpenRagDialog, handleOpenSearch, user }) => {
+const DrawerContent = React.memo(({ 
+  pages = [], 
+  testPages = [], 
+  monitoringPages = [], 
+  adminPages = [], 
+  location, 
+  toggleDrawer, 
+  handleOpenRagDialog, 
+  handleOpenSearch, 
+  user 
+}) => {
+  // Ensure arrays are valid
+  const safePages = Array.isArray(pages) ? pages : [];
+  const safeTestPages = Array.isArray(testPages) ? testPages : [];
+  const safeMonitoringPages = Array.isArray(monitoringPages) ? monitoringPages : [];
+  const safeAdminPages = Array.isArray(adminPages) ? adminPages : [];
+
+  // Add debugging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('DrawerContent props:', { 
+      pages: pages, 
+      pagesIsArray: Array.isArray(pages),
+      testPages: testPages,
+      testPagesIsArray: Array.isArray(testPages),
+      monitoringPages: monitoringPages,
+      monitoringPagesIsArray: Array.isArray(monitoringPages),
+      adminPages: adminPages,
+      adminPagesIsArray: Array.isArray(adminPages)
+    });
+  }
+
   const openRagAndCloseDrawer = useCallback(() => {
     toggleDrawer(false)({});
     handleOpenRagDialog();
@@ -229,7 +281,9 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
     handleOpenSearch();
   }, [toggleDrawer, handleOpenSearch]);
 
-  return (
+  // Add try-catch for the entire render
+  try {
+    return (
     <Box
       sx={{ width: 250 }}
       role="presentation"
@@ -241,7 +295,7 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
       </Box>
       <Divider />
       <List>
-        {pages && pages.map((page) => (
+        {safePages.map((page) => (
           <DrawerListItem 
             key={page.name} 
             page={page} 
@@ -263,11 +317,11 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
             }} 
           />
         </ListItem>
-        {testPages && testPages.map((page) => (
+        {safeTestPages.map((page) => (
           <DrawerListItem 
             key={page.name} 
             page={page} 
-            icon={page.icon} 
+            icon={getIconFromName(page.iconName)} 
             isActive={location.pathname === page.path}
             sx={{ pl: 3 }}
           />
@@ -285,11 +339,11 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
             }} 
           />
         </ListItem>
-        {monitoringPages && monitoringPages.map((page) => (
+        {safeMonitoringPages.map((page) => (
           <DrawerListItem 
             key={page.name} 
             page={page} 
-            icon={page.icon} 
+            icon={getIconFromName(page.iconName)} 
             isActive={location.pathname === page.path}
             sx={{ pl: 3 }}
           />
@@ -309,11 +363,11 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
                 }} 
               />
             </ListItem>
-            {adminPages && adminPages.map((page) => (
+            {safeAdminPages.map((page) => (
               <DrawerListItem 
                 key={page.name} 
                 page={page} 
-                icon={page.icon} 
+                icon={getIconFromName(page.iconName)} 
                 isActive={location.pathname === page.path}
                 sx={{ pl: 3 }}
               />
@@ -365,6 +419,14 @@ const DrawerContent = React.memo(({ pages, testPages, monitoringPages, adminPage
       </List>
     </Box>
   );
+  } catch (error) {
+    console.error('DrawerContent render error:', error);
+    return (
+      <Box sx={{ width: 250, p: 2 }}>
+        <Typography color="error">Navigation error occurred</Typography>
+      </Box>
+    );
+  }
 });
 
 // Main RAG dialog component
@@ -540,6 +602,18 @@ const Navigation = () => {
     <RagDialog open={ragDialogOpen} onClose={handleCloseRagDialog} />
   ), [ragDialogOpen, handleCloseRagDialog]);
 
+  // Add debugging to help identify the issue
+  if (process.env.NODE_ENV === 'development' || process.env.REACT_APP_ENABLE_DEBUG === 'true') {
+    console.log('Navigation render debug:', {
+      pages: pages,
+      pagesType: typeof pages,
+      pagesIsArray: Array.isArray(pages),
+      navigationButtons: navigationButtons,
+      navButtonsType: typeof navigationButtons,
+      navButtonsIsArray: Array.isArray(navigationButtons)
+    });
+  }
+
   // Wrap the JSX return in try-catch, not the hooks
   try {
     return (
@@ -591,7 +665,7 @@ const Navigation = () => {
 
             {/* Desktop navigation */}
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-              {navigationButtons}
+              {navigationButtons || null}
               <Box sx={{ ml: 'auto', mr: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                 <KeyboardShortcutHint shortcut="cmd+k" description="Search" variant="subtle" />
                 <Tooltip title="Search (Cmd+K or Ctrl+K)">
