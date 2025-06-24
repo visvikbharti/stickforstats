@@ -571,7 +571,7 @@ const Navigation = () => {
                 textDecoration: 'none',
               }}
             >
-              {useBranding().branding.companyName}
+              {useBranding()?.branding?.organizationName || 'StickForStats'}
             </Typography>
 
             {/* Mobile hamburger menu */}
