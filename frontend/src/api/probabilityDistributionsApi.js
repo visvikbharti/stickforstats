@@ -4,7 +4,7 @@ import jStat from 'jstat';
 const API_BASE_URL = '/api/v1/probability-distributions';
 
 // Demo mode flag - use fallback implementations only when API calls fail
-const DEMO_MODE = false;
+const DEMO_MODE = process.env.REACT_APP_DEMO_MODE === 'true' || process.env.REACT_APP_DISABLE_API === 'true';
 
 // Helper to generate a unique ID
 const generateId = () => {

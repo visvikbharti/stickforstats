@@ -3,8 +3,76 @@ import axios from 'axios';
 // API base URL
 const API_URL = '/api/v1/pca-analysis';
 
+// Check if in demo mode
+const isDemoMode = process.env.REACT_APP_DEMO_MODE === 'true' || process.env.REACT_APP_DISABLE_API === 'true';
+
+// Mock data for demo mode
+const mockProjects = [
+  {
+    id: 'demo-pca-1',
+    name: 'Gene Expression Analysis',
+    description: 'Principal component analysis of gene expression data',
+    created_at: new Date().toISOString(),
+    data_shape: [100, 20],
+    has_results: true
+  },
+  {
+    id: 'demo-pca-2',
+    name: 'Customer Segmentation',
+    description: 'PCA for customer behavior patterns',
+    created_at: new Date().toISOString(),
+    data_shape: [500, 15],
+    has_results: false
+  }
+];
+
+// Generate mock PCA results
+const generateMockPcaResults = (projectId) => {
+  const n_samples = 100;
+  const n_features = 20;
+  const n_components = 3;
+  
+  // Generate mock data
+  const pc1Values = Array.from({length: n_samples}, () => (Math.random() - 0.5) * 4);
+  const pc2Values = Array.from({length: n_samples}, () => (Math.random() - 0.5) * 3);
+  const pc3Values = Array.from({length: n_samples}, () => (Math.random() - 0.5) * 2);
+  
+  return {
+    sessionId: `demo-session-${Date.now()}`,
+    projectId: projectId,
+    explained_variance_ratio: [0.45, 0.25, 0.15, 0.08, 0.04, 0.03],
+    cumulative_variance_ratio: [0.45, 0.70, 0.85, 0.93, 0.97, 1.0],
+    loadings: Array.from({length: n_features}, (_, i) => ({
+      feature: `Feature_${i + 1}`,
+      PC1: (Math.random() - 0.5) * 2,
+      PC2: (Math.random() - 0.5) * 2,
+      PC3: (Math.random() - 0.5) * 2
+    })),
+    scores: pc1Values.map((pc1, i) => ({
+      sample_id: `Sample_${i + 1}`,
+      PC1: pc1,
+      PC2: pc2Values[i],
+      PC3: pc3Values[i]
+    })),
+    eigenvalues: [9.0, 5.0, 3.0, 1.6, 0.8, 0.6],
+    n_components: n_components,
+    n_samples: n_samples,
+    n_features: n_features,
+    configuration: {
+      numComponents: n_components,
+      scalingMethod: 'standard',
+      excludeColumns: [],
+      groupingColumn: ''
+    }
+  };
+};
+
 // Project endpoints
 export const fetchPcaProjects = async () => {
+  if (isDemoMode) {
+    return mockProjects;
+  }
+  
   try {
     const response = await axios.get(`${API_URL}/projects/`);
     return response.data;
@@ -14,6 +82,12 @@ export const fetchPcaProjects = async () => {
 };
 
 export const fetchPcaProject = async (projectId) => {
+  if (isDemoMode) {
+    const project = mockProjects.find(p => p.id === projectId);
+    if (project) return project;
+    throw new Error('Project not found');
+  }
+  
   try {
     const response = await axios.get(`${API_URL}/projects/${projectId}/`);
     return response.data;
@@ -23,6 +97,19 @@ export const fetchPcaProject = async (projectId) => {
 };
 
 export const createPcaProject = async (projectData) => {
+  if (isDemoMode) {
+    const newProject = {
+      id: `demo-pca-${Date.now()}`,
+      name: projectData.name || 'New PCA Project',
+      description: projectData.description || 'Demo PCA analysis project',
+      created_at: new Date().toISOString(),
+      data_shape: [0, 0],
+      has_results: false
+    };
+    mockProjects.push(newProject);
+    return newProject;
+  }
+  
   try {
     const response = await axios.post(`${API_URL}/projects/`, projectData);
     return response.data;
@@ -51,6 +138,24 @@ export const deletePcaProject = async (projectId) => {
 
 // Data upload
 export const uploadPcaData = async (formData) => {
+  if (isDemoMode) {
+    // Simulate file upload in demo mode
+    return {
+      id: `demo-dataset-${Date.now()}`,
+      filename: 'demo_data.csv',
+      rows: 100,
+      columns: 20,
+      numeric_columns: Array.from({length: 20}, (_, i) => `Feature_${i + 1}`),
+      categorical_columns: ['Group'],
+      preview: Array.from({length: 5}, (_, i) => ({
+        ...Object.fromEntries(
+          Array.from({length: 20}, (_, j) => [`Feature_${j + 1}`, Math.random() * 100])
+        ),
+        Group: i < 2 ? 'Control' : 'Treatment'
+      }))
+    };
+  }
+  
   try {
     const response = await axios.post(`${API_URL}/projects/upload_data/`, formData, {
       headers: {
@@ -73,9 +178,18 @@ export const createPcaDemoProject = async (projectData) => {
 };
 
 // PCA analysis
-export const runPcaAnalysis = async (projectId, analysisParams) => {
+export const runPcaAnalysis = async (analysisData) => {
+  if (isDemoMode) {
+    // Simulate PCA analysis in demo mode
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate processing time
+    return generateMockPcaResults(analysisData.datasetId || 'demo-project');
+  }
+  
+  // Original API expects projectId and analysisParams separately
+  const { datasetId, configuration } = analysisData;
+  
   try {
-    const response = await axios.post(`${API_URL}/projects/${projectId}/run_pca/`, analysisParams);
+    const response = await axios.post(`${API_URL}/projects/${datasetId}/run_pca/`, configuration);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -84,6 +198,11 @@ export const runPcaAnalysis = async (projectId, analysisParams) => {
 
 // Results endpoints
 export const fetchPcaResults = async (resultId) => {
+  if (isDemoMode) {
+    // Return mock results for demo mode
+    return generateMockPcaResults('demo-project');
+  }
+  
   try {
     const response = await axios.get(`${API_URL}/results/${resultId}/`);
     return response.data;

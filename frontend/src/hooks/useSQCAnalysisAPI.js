@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 
+// Check if in demo mode
+const isDemoMode = process.env.REACT_APP_DEMO_MODE === 'true' || process.env.REACT_APP_DISABLE_API === 'true';
+
 // Create an Axios instance with base configuration
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1',
@@ -8,6 +11,55 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// Mock data for demo mode
+const generateMockControlChart = (chartType, dataSize = 100) => {
+  const centerLine = 50;
+  const ucl = centerLine + 3 * 5; // 3 sigma
+  const lcl = centerLine - 3 * 5;
+  
+  const data = Array.from({length: dataSize}, (_, i) => {
+    const value = centerLine + (Math.random() - 0.5) * 10;
+    const outOfControl = Math.random() < 0.05; // 5% out of control
+    
+    return {
+      sample_number: i + 1,
+      value: outOfControl ? (Math.random() > 0.5 ? ucl + 2 : lcl - 2) : value,
+      subgroup_mean: value,
+      subgroup_range: Math.random() * 5,
+      moving_range: i > 0 ? Math.abs(value - centerLine) : 0,
+      out_of_control: outOfControl,
+      violated_rules: outOfControl ? ['Rule 1: Point beyond control limits'] : []
+    };
+  });
+  
+  return {
+    chart_type: chartType,
+    center_line: centerLine,
+    upper_control_limit: ucl,
+    lower_control_limit: lcl,
+    data: data,
+    statistics: {
+      mean: centerLine,
+      std_dev: 5,
+      cp: 1.33,
+      cpk: 1.25,
+      pp: 1.28,
+      ppk: 1.20,
+      out_of_control_points: data.filter(d => d.out_of_control).length,
+      total_points: dataSize
+    },
+    process_capability: {
+      cp: 1.33,
+      cpk: 1.25,
+      pp: 1.28,
+      ppk: 1.20,
+      sigma_level: 3.98,
+      dpmo: 6210,
+      within_spec_percentage: 99.38
+    }
+  };
+};
 
 // Add request interceptor for authentication
 api.interceptors.request.use(
@@ -41,6 +93,29 @@ export const useSQCAnalysisAPI = () => {
   const uploadDataset = useCallback(async (dataset) => {
     setIsLoading(true);
     setError(null);
+    
+    if (isDemoMode) {
+      // Simulate dataset upload in demo mode
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const mockDataset = {
+        id: `demo-dataset-${Date.now()}`,
+        name: dataset.name || 'Demo SQC Dataset',
+        description: dataset.description || 'Statistical Quality Control demo data',
+        rows: 100,
+        columns: ['Sample_ID', 'Measurement', 'Subgroup', 'Operator'],
+        created_at: new Date().toISOString(),
+        preview: Array.from({length: 5}, (_, i) => ({
+          Sample_ID: i + 1,
+          Measurement: 50 + (Math.random() - 0.5) * 10,
+          Subgroup: Math.floor(i / 5) + 1,
+          Operator: ['A', 'B', 'C'][i % 3]
+        }))
+      };
+      
+      setIsLoading(false);
+      return mockDataset;
+    }
     
     try {
       // Create form data for file upload
@@ -78,6 +153,25 @@ export const useSQCAnalysisAPI = () => {
     setIsLoading(true);
     setError(null);
     
+    if (isDemoMode) {
+      // Simulate session creation in demo mode
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const mockSession = {
+        id: `demo-session-${Date.now()}`,
+        dataset_id: params.datasetId,
+        name: params.name || 'Demo SQC Analysis',
+        description: params.description || '',
+        module: params.module || 'sqc',
+        configuration: params.configuration || {},
+        created_at: new Date().toISOString(),
+        status: 'active'
+      };
+      
+      setIsLoading(false);
+      return mockSession;
+    }
+    
     try {
       const response = await api.post('/core/analysis-sessions/', {
         dataset_id: params.datasetId,
@@ -105,6 +199,35 @@ export const useSQCAnalysisAPI = () => {
   const runControlChartAnalysis = useCallback(async (params) => {
     setIsLoading(true);
     setError(null);
+    
+    if (isDemoMode) {
+      // Simulate control chart analysis in demo mode
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const mockResult = {
+        id: `demo-analysis-${Date.now()}`,
+        session_id: params.sessionId,
+        chart_type: params.chartType,
+        ...generateMockControlChart(params.chartType),
+        recommendations: [
+          {
+            type: 'warning',
+            title: 'Process Variability',
+            description: 'The process shows signs of increased variability. Consider investigating potential causes.',
+            action: 'Review recent process changes'
+          },
+          {
+            type: 'info',
+            title: 'Process Capability',
+            description: 'Process capability indices indicate the process is capable but could be improved.',
+            action: 'Consider process optimization'
+          }
+        ]
+      };
+      
+      setIsLoading(false);
+      return mockResult;
+    }
     
     try {
       const response = await api.post('/sqc/control-charts/', {

@@ -2,12 +2,88 @@ import apiService from './apiService';
 
 const API_URL = '/api/v1/doe';
 
+// Check if in demo mode
+const isDemoMode = process.env.REACT_APP_DEMO_MODE === 'true' || process.env.REACT_APP_DISABLE_API === 'true';
+
+// Mock experiment designs for demo mode
+const mockDesigns = [
+  {
+    id: 'demo-doe-1',
+    name: 'Factorial Design - Process Optimization',
+    design_type: 'factorial',
+    factors: [
+      { name: 'Temperature', levels: [150, 180, 210], units: '°C' },
+      { name: 'Pressure', levels: [1, 2, 3], units: 'bar' },
+      { name: 'Time', levels: [30, 45, 60], units: 'min' }
+    ],
+    responses: ['Yield', 'Purity'],
+    run_order: Array.from({length: 27}, (_, i) => i + 1),
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'demo-doe-2', 
+    name: 'Response Surface - Chemical Reaction',
+    design_type: 'response_surface',
+    factors: [
+      { name: 'Catalyst', min: 0.5, max: 2.5, units: 'g' },
+      { name: 'pH', min: 6, max: 8, units: '' }
+    ],
+    responses: ['Conversion', 'Selectivity'],
+    created_at: new Date().toISOString()
+  }
+];
+
+// Generate mock analysis results
+const generateMockAnalysisResults = (designId) => {
+  return {
+    id: `demo-analysis-${Date.now()}`,
+    design_id: designId,
+    model_type: 'linear',
+    r_squared: 0.92,
+    adjusted_r_squared: 0.89,
+    effects: [
+      { factor: 'Temperature', effect: 15.2, p_value: 0.001, significant: true },
+      { factor: 'Pressure', effect: 8.7, p_value: 0.023, significant: true },
+      { factor: 'Time', effect: 3.4, p_value: 0.156, significant: false },
+      { factor: 'Temperature*Pressure', effect: 6.1, p_value: 0.045, significant: true }
+    ],
+    anova: {
+      model: { df: 6, sum_sq: 2340.5, mean_sq: 390.1, f_value: 28.4, p_value: 0.0001 },
+      residual: { df: 20, sum_sq: 274.8, mean_sq: 13.74 },
+      total: { df: 26, sum_sq: 2615.3 }
+    },
+    coefficients: [
+      { term: 'Intercept', coefficient: 75.3, std_error: 1.2, t_value: 62.8, p_value: 0.0001 },
+      { term: 'Temperature', coefficient: 0.152, std_error: 0.021, t_value: 7.24, p_value: 0.001 },
+      { term: 'Pressure', coefficient: 4.35, std_error: 1.82, t_value: 2.39, p_value: 0.023 }
+    ],
+    residuals: Array.from({length: 27}, () => (Math.random() - 0.5) * 10),
+    predictions: Array.from({length: 27}, () => 70 + Math.random() * 30)
+  };
+};
+
 /**
  * Generate an experimental design based on user specifications
  * @param {Object} designData - Design specification including factors, responses, etc.
  * @returns {Promise<Object>} The generated design
  */
 export async function generateDesign(designData) {
+  if (isDemoMode) {
+    // Simulate design generation in demo mode
+    const newDesign = {
+      id: `demo-doe-${Date.now()}`,
+      name: designData.name || 'New Experimental Design',
+      design_type: designData.design_type || 'factorial',
+      factors: designData.factors || [],
+      responses: designData.responses || ['Response 1'],
+      runs: designData.design_type === 'factorial' ? 
+        Math.pow(2, designData.factors?.length || 2) : 13,
+      created_at: new Date().toISOString()
+    };
+    mockDesigns.push(newDesign);
+    return newDesign;
+  }
+  
   try {
     return await apiService.post(
       `${API_URL}/experiment-designs/generate_design/`,
@@ -25,6 +101,10 @@ export async function generateDesign(designData) {
  * @returns {Promise<Array>} List of experiment designs
  */
 export async function getExperimentDesigns(params = {}) {
+  if (isDemoMode) {
+    return mockDesigns;
+  }
+  
   try {
     return await apiService.get(
       `${API_URL}/experiment-designs/`,
@@ -42,6 +122,12 @@ export async function getExperimentDesigns(params = {}) {
  * @returns {Promise<Object>} Experiment design details
  */
 export async function getExperimentDesign(designId) {
+  if (isDemoMode) {
+    const design = mockDesigns.find(d => d.id === designId);
+    if (design) return design;
+    throw new Error('Design not found');
+  }
+  
   try {
     return await apiService.get(
       `${API_URL}/experiment-designs/${designId}/`
@@ -76,6 +162,12 @@ export async function uploadExperimentData(designId, formData) {
  * @returns {Promise<Object>} Analysis results
  */
 export async function runModelAnalysis(analysisData) {
+  if (isDemoMode) {
+    // Simulate analysis in demo mode
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate processing
+    return generateMockAnalysisResults(analysisData.design_id);
+  }
+  
   try {
     return await apiService.post(
       `${API_URL}/model-analyses/run_analysis/`,
@@ -229,6 +321,25 @@ export async function fetchEducationalContent() {
  * @returns {Promise<Object>} Analysis data
  */
 export async function fetchAnalysisData(experimentId) {
+  if (isDemoMode) {
+    // Return mock analysis data for demo mode
+    const design = mockDesigns.find(d => d.id === experimentId);
+    if (!design) throw new Error('Experiment not found');
+    
+    return {
+      experiment: design,
+      data: Array.from({length: design.run_order?.length || 27}, (_, i) => ({
+        run: i + 1,
+        ...Object.fromEntries(
+          design.factors.map(f => [f.name, f.levels ? f.levels[i % f.levels.length] : f.min + Math.random() * (f.max - f.min)])
+        ),
+        Yield: 70 + Math.random() * 30,
+        Purity: 85 + Math.random() * 15
+      })),
+      analysis: generateMockAnalysisResults(experimentId)
+    };
+  }
+  
   try {
     return await apiService.get(
       `${API_URL}/experiment-analyses/${experimentId}/`
