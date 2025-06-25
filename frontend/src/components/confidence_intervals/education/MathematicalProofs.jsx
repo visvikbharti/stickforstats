@@ -934,18 +934,18 @@ const MathematicalProofs = () => {
                         </MathJax>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 2 }}>
-                          where $\xrightarrow{\text{d}}$ denotes convergence in distribution.
+                          where <MathJax inline>{"$\\xrightarrow{\\text{d}}$"}</MathJax> denotes convergence in distribution.
                         </Typography>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 2 }}>
-                          This means that for large $n$, we can approximate:
+                          This means that for large <MathJax inline>{"$n$"}</MathJax>, we can approximate:
                         </Typography>
                         <MathJax>
                           {"$$\\bar{X}_n \\approx N\\left(\\mu, \\frac{\\sigma^2}{n}\\right)$$"}
                         </MathJax>
                         
                         <Typography variant="body2" paragraph sx={{ mt: 2 }}>
-                          Leading to the asymptotic $(1-\alpha)$ confidence interval for $\mu$:
+                          Leading to the asymptotic <MathJax inline>{"$(1-\\alpha)$"}</MathJax> confidence interval for <MathJax inline>{"$\\mu$"}</MathJax>:
                         </Typography>
                         <MathJax>
                           {"$$\\bar{X}_n \\pm z_{\\alpha/2} \\frac{\\sigma}{\\sqrt{n}}$$"}
@@ -962,7 +962,7 @@ const MathematicalProofs = () => {
                       
                       <Box sx={{ p: 2, bgcolor: 'background.paper', my: 2 }}>
                         <Typography variant="body2" paragraph>
-                          The Delta Method extends the CLT to functions of asymptotically normal estimators. If <MathJax inline>{"\\sqrt{n}(\\hat{\\theta}_n - \\theta) \\xrightarrow{\\text{d}} N(0, \\sigma^2)"}</MathJax> and <MathJax inline>{"g"}</MathJax> is differentiable at <MathJax inline>{"\\theta"}</MathJax> with <MathJax inline>{"g'(\\theta) \\neq 0"}</MathJax>, then:
+                          The Delta Method extends the CLT to functions of asymptotically normal estimators. If <MathJax inline>{"$\\sqrt{n}(\\hat{\\theta}_n - \\theta) \\xrightarrow{\\text{d}} N(0, \\sigma^2)$"}</MathJax> and <MathJax inline>{"$g$"}</MathJax> is differentiable at <MathJax inline>{"$\\theta$"}</MathJax> with <MathJax inline>{"$g'(\\theta) \\neq 0$"}</MathJax>, then:
                         </Typography>
                         <MathJax>
                           {"$$\\sqrt{n}(g(\\hat{\\theta}_n) - g(\\theta)) \\xrightarrow{\\text{d}} N(0, [g'(\\theta)]^2 \\sigma^2)$$"}
